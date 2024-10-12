@@ -1,0 +1,8 @@
+{
+  "HomePage": {
+    "sign_in": {
+      "google": "Iniciar sesión con Google"
+    },
+    "sign_out": "Cerrar sesión"
+  }
+}
