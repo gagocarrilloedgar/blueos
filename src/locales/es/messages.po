@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/App.tsx:38
+msgid "Login with Google"
+msgstr "Inicia sesión con Google"
+
 #: src/App.tsx:28
-msgid "Random text in english"
-msgstr "Texto aleatorio en inglés"
+#~ msgid "Random text in english"
+#~ msgstr "Texto aleatorio en inglés"

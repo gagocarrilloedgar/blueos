@@ -2,9 +2,10 @@ import { useEffect } from "react";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
+import { RouterProvider } from "react-router-dom";
 
-import App from "./App";
 import { defaultLocale, dynamicActivate } from "./config";
+import { router } from "./router";
 
 export const Providers = () => {
   useEffect(() => {
@@ -14,7 +15,7 @@ export const Providers = () => {
 
   return (
     <I18nProvider i18n={i18n}>
-      <App />
+      <RouterProvider router={router} />
     </I18nProvider>
   );
 };
