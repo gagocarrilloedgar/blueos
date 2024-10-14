@@ -93,7 +93,10 @@ const PricingCard = ({
                 }
               )}
             >
-              Save ${monthlyPrice * 12 - yearlyPrice}
+              Save
+              {" " +
+                Math.round(((monthlyPrice - yearlyPrice) / yearlyPrice) * 100)}
+              %
             </div>
           </div>
         ) : (
@@ -104,13 +107,13 @@ const PricingCard = ({
         <div className="flex gap-0.5">
           <h3 className="text-3xl font-bold">
             {yearlyPrice && isYearly
-              ? "$" + yearlyPrice
+              ? "€" + yearlyPrice
               : monthlyPrice
-                ? "$" + monthlyPrice
+                ? "€" + monthlyPrice
                 : "Custom"}
           </h3>
           <span className="flex flex-col justify-end text-sm mb-1">
-            {yearlyPrice && isYearly ? "/year" : monthlyPrice ? "/month" : null}
+            {monthlyPrice ? "/employee" : null}
           </span>
         </div>
         <CardDescription className="pt-1.5 h-12">{description}</CardDescription>
@@ -144,26 +147,15 @@ export default function Pricing() {
 
   const plans = [
     {
-      title: "Basic",
-      monthlyPrice: 10,
-      yearlyPrice: 100,
-      description: "Essential features you need to get started",
+      title: "Blues",
+      monthlyPrice: 1.2,
+      yearlyPrice: 1,
+      description: "For companies up to 250 employees",
       features: [
-        "Example Feature Number 1",
-        "Example Feature Number 2",
-        "Example Feature Number 3"
-      ],
-      actionLabel: "Get Started"
-    },
-    {
-      title: "Pro",
-      monthlyPrice: 25,
-      yearlyPrice: 250,
-      description: "Perfect for owners of small & medium businessess",
-      features: [
-        "Example Feature Number 1",
-        "Example Feature Number 2",
-        "Example Feature Number 3"
+        "Time off",
+        "Time management",
+        "Shift management",
+        "Basic document storage"
       ],
       actionLabel: "Get Started",
       popular: true
@@ -171,12 +163,14 @@ export default function Pricing() {
     {
       title: "Enterprise",
       price: "Custom",
-      description: "Dedicated support and infrastructure to fit your needs",
+      description: "For companies with more than 250 employees",
       features: [
-        "Example Feature Number 1",
-        "Example Feature Number 2",
-        "Example Feature Number 3",
-        "Super Exclusive Feature"
+        "All modules included in blues",
+        "Extended document storage",
+        "Custom integratinos",
+        "Dedicated support",
+        "On premise",
+        "SSO"
       ],
       actionLabel: "Contact Sales",
       exclusive: true

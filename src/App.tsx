@@ -14,8 +14,8 @@ export default function App() {
   const goToSignUpPage = () => navigate("/signup");
 
   return (
-    <div className="flex pt-20 flex-col size-full justify-center">
-      <div className="h-screen w-screen z-10 pt-10 justify-center flex-col bg-transparent">
+    <div className="flex flex-col size-full justify-center">
+      <div className="h-screen w-screen z-10 pt-20 justify-center flex-col bg-transparent">
         <section className="flex flex-col gap-2 text-center">
           <BlurFade delay={0.3} inView>
             <span className="text-black bg-clip-text text-center text-6xl font-semibold leading-none text-transparent dark:text-white py-2">
