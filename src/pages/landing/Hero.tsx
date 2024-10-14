@@ -46,7 +46,7 @@ export function Hero() {
 
 export function Demo() {
   return (
-    <div className="relative mt-10 flex w-[800px] flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
+    <div className="hidden lg:flex relative mt-10  w-[800px] flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
       <img
         src="/homepage.png"
         alt="Product demo"
