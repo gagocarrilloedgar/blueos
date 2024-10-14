@@ -1,14 +1,14 @@
+import BlurFade from "@/components/ui/blur-fade";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { Button } from "@/components/ui/button";
+import DotPattern from "@/components/ui/dot-pattern";
+import { cn } from "@/lib/utils";
 import { Trans } from "@lingui/macro";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
-import BlurFade from "./components/ui/blur-fade";
-import { BorderBeam } from "./components/ui/border-beam";
-import { Button } from "./components/ui/button";
-import DotPattern from "./components/ui/dot-pattern";
-import { cn } from "./lib/utils";
-import Pricing from "./pages/landing/Pricing";
+import Pricing from "./Pricing";
 
-export default function App() {
+export function App() {
   const navigate = useNavigate();
 
   const goToSignUpPage = () => navigate("/signup");
@@ -66,7 +66,7 @@ export default function App() {
   );
 }
 
-export function Demo() {
+function Demo() {
   return (
     <div className="relative mt-10 flex w-[800px] flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
       <img src="/homepage.png" className="h-full w-full object-contain" />
