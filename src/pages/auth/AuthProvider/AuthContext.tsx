@@ -3,8 +3,10 @@ import { createContext } from "react";
 
 interface AuthContextProps {
   session: Session | null;
+  loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  session: null
+  session: null,
+  loading: true
 });

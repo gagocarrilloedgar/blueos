@@ -6,8 +6,13 @@ export const createSupabaseAuthRepository = (): AuthRepository => {
   return {
     getSession,
     googleSignIn,
-    onAuthChange
+    onAuthChange,
+    logOut
   };
+};
+
+const logOut = async () => {
+  await supabase.auth.signOut();
 };
 
 const getSession = async () => {

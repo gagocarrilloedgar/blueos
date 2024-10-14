@@ -6,4 +6,5 @@ export interface AuthRepository {
   onAuthChange: (setSession: (session: Session | null) => void) => {
     unsubscribe: () => void;
   };
+  logOut: () => Promise<void>;
 }

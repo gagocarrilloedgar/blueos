@@ -12,7 +12,7 @@ import { Trans } from "@lingui/macro";
 import { DotBackground } from "./DotBackground";
 
 export function Login({ authRepo }: { authRepo: AuthRepository }) {
-  const signIn = () => googleSignIn(authRepo);
+  const signIn = () => googleSignIn(authRepo)("http://localhost:5173/app");
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <Card className="z-10 mx-auto max-w-sm">
