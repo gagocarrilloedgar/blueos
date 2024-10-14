@@ -1,10 +1,19 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import App from "./App";
+import { createSupabaseAuthRepository } from "./modules/auth/infra/SupabaseAuthRepository";
 import { Login, SignUp } from "./pages/auth";
+import { AuthProvider } from "./pages/auth/AuthProvider";
+
+const repo = createSupabaseAuthRepository();
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: (
+      <AuthProvider authRepo={repo}>
+        <Outlet />
+      </AuthProvider>
+    ),
     children: [
       {
         index: true,
@@ -12,7 +21,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login />
+        element: <Login authRepo={repo} />
       },
       {
         path: "/signup",

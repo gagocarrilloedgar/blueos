@@ -6,25 +6,26 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { googleSignIn } from "@/modules/auth/application";
+import { AuthRepository } from "@/modules/auth/domain";
+import { Trans } from "@lingui/macro";
 
-export const description =
-  "A login form with email and password. There's an option to login with Google and a link to sign up if you don't have an account.";
-
-export function Login() {
+export function Login({ authRepo }: { authRepo: AuthRepository }) {
+  const signIn = () => googleSignIn(authRepo);
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">
+            <Trans>Login</Trans>
+          </CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            <Trans>Welcome back, happy to seee you here again</Trans>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            <div className="grid gap-2">
+            {/*<div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -45,14 +46,15 @@ export function Login() {
             <Button type="submit" className="w-full">
               Login
             </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
+            */}
+            <Button onClick={signIn} className="w-full">
+              <Trans>Login with Google</Trans>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            <Trans>Don&apos;t have an account? </Trans>{" "}
             <a href="/signup" className="underline">
-              Sign up
+              <Trans>Sign up</Trans>
             </a>
           </div>
         </CardContent>
