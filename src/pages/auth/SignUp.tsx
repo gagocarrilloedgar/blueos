@@ -9,13 +9,14 @@ import {
 import { googleSignIn } from "@/modules/auth/application";
 import { AuthRepository } from "@/modules/auth/domain";
 import { Trans } from "@lingui/macro";
+import { DotBackground } from "./DotBackground";
 
 export function SignUp({ authRepo }: { authRepo: AuthRepository }) {
   const signIn = () => googleSignIn(authRepo);
 
   return (
     <div className="h-screen w-screen flex items-center justify-center">
-      <Card className="mx-auto max-w-sm">
+      <Card className="z-10 mx-auto max-w-sm">
         <CardHeader>
           <CardTitle className="text-xl">
             <Trans>Sign Up</Trans>
@@ -56,6 +57,7 @@ export function SignUp({ authRepo }: { authRepo: AuthRepository }) {
           </div>
         </CardContent>
       </Card>
+      <DotBackground />
     </div>
   );
 }
