@@ -1,6 +1,7 @@
 import {
   Bell,
   Calendar,
+  ChevronsRightLeft,
   Clock,
   Eclipse,
   Files,
@@ -20,15 +21,24 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 import { AuthRepository } from "@/modules/auth/domain";
 import { Trans } from "@lingui/macro";
+import { useState } from "react";
 import { useSession } from "../auth/AuthProvider";
 import { NavigationMenu } from "./NavigationMenu";
 
 export function Dashboard({ authRepo }: { authRepo: AuthRepository }) {
   const { loading } = useSession();
+  const [collpased, setCollapsed] = useState<boolean>(false);
 
   if (loading) return;
+
+  const maxWidth = collpased ? "60px_1fr" : "200px_1fr";
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[200px_1fr] lg:grid-cols-[220px_1fr]">
@@ -39,6 +49,21 @@ export function Dashboard({ authRepo }: { authRepo: AuthRepository }) {
               <Eclipse className="h-6 w-6" />
               <span className="font-extrabold">Blue OS</span>
             </a>
+            <span className="ml-auto h-8 w-8">
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    onClick={() => setCollapsed((prev) => !prev)}
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto h-8 w-8"
+                  >
+                    <ChevronsRightLeft className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>collpase</TooltipContent>
+              </Tooltip>
+            </span>
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
