@@ -4,6 +4,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { RouterProvider } from "react-router-dom";
 
+import { ThemeProvider } from "./components/ThemeProvider";
 import { defaultLocale, dynamicActivate } from "./config";
 import { router } from "./router";
 
@@ -15,7 +16,9 @@ export const Providers = () => {
 
   return (
     <I18nProvider i18n={i18n}>
-      <RouterProvider router={router} />
+      <ThemeProvider defaultTheme="light" storageKey="blue-ui-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </I18nProvider>
   );
 };
