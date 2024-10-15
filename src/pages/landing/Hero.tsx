@@ -1,6 +1,7 @@
 import BlurFade from "@/components/ui/blur-fade";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Button } from "@/components/ui/button";
+import WordRotate from "@/components/ui/word-rotate";
 import { Trans } from "@lingui/macro";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
@@ -17,9 +18,14 @@ export function Hero() {
       </BlurFade>
       <BlurFade delay={0.3 * 2} inView>
         <span className="text-black text-6xl">
-          <Trans>
-            Effortless time management for <strong>SMEs</strong>
-          </Trans>
+          <Trans>Effortless </Trans>
+          <strong>
+            <WordRotate
+              duration={1500}
+              words={["time", "people", "operation"]}
+            />
+          </strong>
+          <Trans>management for SMEs</Trans>
         </span>
       </BlurFade>
 
