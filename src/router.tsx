@@ -4,6 +4,7 @@ import { Login, SignUp } from "./pages/auth";
 import { AuthProvider } from "./pages/auth/AuthProvider";
 import { Dashboard } from "./pages/dashboard";
 import { App } from "./pages/landing";
+import { Onboarding } from "./pages/onboarding/Onboarding";
 
 const repo = createSupabaseAuthRepository();
 
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp authRepo={repo} />
+      },
+      {
+        path: "/onboarding",
+        element: <Onboarding authRepo={repo} />
       },
       {
         path: "/app",
