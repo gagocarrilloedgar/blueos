@@ -113,7 +113,7 @@ const PricingCard = ({
                 : "Custom"}
           </h3>
           <span className="flex flex-col justify-end text-sm mb-1">
-            {monthlyPrice ? "/employee" : null}
+            {monthlyPrice ? "/month" : null}
           </span>
         </div>
         <CardDescription className="pt-1.5 h-12">{description}</CardDescription>
@@ -125,7 +125,10 @@ const PricingCard = ({
       </CardContent>
     </div>
     <CardFooter className="mt-2">
-      <Button disabled={exclusive} className="relative inline-flex w-full items-center justify-center rounded-md bg-black text-white dark:bg-white px-6 font-medium  dark:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+      <Button
+        disabled={exclusive}
+        className="relative inline-flex w-full items-center justify-center rounded-md bg-black text-white dark:bg-white px-6 font-medium  dark:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+      >
         <div className="absolute -inset-0.5 -z-10 rounded-lg bg-gradient-to-b from-[#c7d2fe] to-[#8678f9] opacity-75 blur" />
         {actionLabel}
       </Button>
@@ -148,16 +151,31 @@ export default function Pricing() {
   const plans = [
     {
       title: "Blues",
-      monthlyPrice: 1.2,
-      yearlyPrice: 1,
-      description: "For companies up to 250 employees",
+      monthlyPrice: 10,
+      yearlyPrice: 8,
+      description: "For freelancers and small companies",
       features: [
-        "Time off",
-        "Time management",
-        "Shift management",
-        "Basic document storage"
+        "5 Client accounts",
+        "3 Client portals",
+        "20 Projects",
+        "Up to 5 team members",
+        "100 GB of document storage"
       ],
-      actionLabel: "Get Started",
+      actionLabel: "Join the beta"
+    },
+    {
+      title: "Blues",
+      monthlyPrice: 50,
+      yearlyPrice: 40,
+      description: "For medium companies",
+      features: [
+        "40 Client accounts",
+        "10 Client portals",
+        "Unlimitted projects",
+        "Up to 25 team members",
+        "10 TB of document storage"
+      ],
+      actionLabel: "Join the beta",
       popular: true
     },
     {
@@ -165,10 +183,11 @@ export default function Pricing() {
       price: "Custom",
       description: "For companies with more than 250 employees",
       features: [
-        "All modules included in blues",
-        "Extended document storage",
-        "Custom integratinos",
-        "Dedicated support",
+        "40 Client accounts",
+        "10 Client portals",
+        "Unlimitted projects",
+        "Unlimitted storage",
+        "Unlimitted team members",
         "On premise",
         "SSO"
       ],
