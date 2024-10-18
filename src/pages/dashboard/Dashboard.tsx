@@ -26,7 +26,9 @@ export function Dashboard({ authRepo }: { authRepo: AuthRepository }) {
             setHide(false);
           }}
         />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6"></main>
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          <nav></nav>
+        </main>
       </div>
     </div>
   );
