@@ -7,10 +7,24 @@ export const createSupabaseAuthRepository = (): AuthRepository => {
     getSession,
     googleSignIn,
     onAuthChange,
+    getAccount,
     logOut
   };
 };
 
+const getAccount = async (userId: string) => {
+  const { data: account, error } = await supabase
+    .from("accounts")
+    .select("id, name")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    throw new Error(`Error fetching account: ${error.message}`);
+  }
+
+  return account;
+};
 const logOut = async () => {
   await supabase.auth.signOut();
 };

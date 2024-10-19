@@ -38,7 +38,7 @@ export const AuthProvider = ({
   const initSession = useCallback(async () => {
     setLoading(true);
     const newSession = await authService.getSession();
-    setSession(newSession);
+    setSession(newSession.session);
   }, [authService]);
 
   useEffect(() => {

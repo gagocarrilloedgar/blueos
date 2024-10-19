@@ -150,7 +150,7 @@ export default function Pricing() {
 
   const plans = [
     {
-      title: "Blues",
+      title: "Basic",
       monthlyPrice: 10,
       yearlyPrice: 8,
       description: "For freelancers and small companies",
