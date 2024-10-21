@@ -1,10 +1,30 @@
+export type CreatedAccount = {
+  id: number;
+  name: string;
+};
+
+export type CreatedTeam = {
+  id: number;
+  name: string;
+};
+
+export type CreatedTeamAccount = {
+  accountId: number;
+  teamId: number;
+};
+
 export interface OnboardingRepository {
-  createCompany: (name: string, size: number) => Promise<{ id: number } | null>;
-  createEmployee: (
+  createTeam: (name: string, size: number) => Promise<CreatedTeam | null>;
+  createAccount: (
     firstName: string,
     lastName: string,
-    email: string,
+    userId: string
+  ) => Promise<CreatedAccount | null>;
+  createTeamWithAccount: (
+    companyName: string,
+    firstName: string,
+    lastName: string,
     userId: string,
-    companyId: number
-  ) => Promise<void>;
+    userEmail: string
+  ) => Promise<{ teamId: number; accountId: number } | null>;
 }

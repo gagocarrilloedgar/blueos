@@ -1,3 +1,3 @@
 export * from "./AuthProvider";
-export * from "./useSessions";
+export * from "./useAuth";
 

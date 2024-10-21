@@ -16,14 +16,13 @@ const getAccount = async (userId: string) => {
   const { data: account, error } = await supabase
     .from("accounts")
     .select("id, name")
-    .eq("user_id", userId)
-    .single();
+    .eq("user_id", userId);
 
   if (error) {
     throw new Error(`Error fetching account: ${error.message}`);
   }
 
-  return account;
+  return account ? account[0] : null;
 };
 const logOut = async () => {
   await supabase.auth.signOut();

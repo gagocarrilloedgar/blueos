@@ -1,35 +1,58 @@
-import { AuthRepository } from "@/modules/auth/domain";
-import { useState } from "react";
-import { useSession } from "../auth/AuthProvider";
-import { MobileSidebar } from "./MobileSidebar";
-import { SideBar } from "./Sidebar";
+import { AppSidebar } from "@/components/layout";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger
+} from "@/components/ui/sidebar";
 
-export function Dashboard({ authRepo }: { authRepo: AuthRepository }) {
-  const { loading } = useSession();
-  const [hide, setHide] = useState<boolean>(false);
-
-  if (loading) return;
-
+export default function Page() {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[300px_1fr] lg:grid-cols-[300px_1fr]">
-      <SideBar
-        hide={hide}
-        hideSideBar={() => {
-          setHide(true);
-        }}
-        authRepo={authRepo}
-      />
-      <div className="flex flex-col">
-        <MobileSidebar
-          hide={hide}
-          showSidebar={() => {
-            setHide(false);
-          }}
-        />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <nav></nav>
-        </main>
-      </div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <Skeletons />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
+
+const Skeletons = () => {
+  return (
+    <>
+      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div className="aspect-video rounded-xl bg-muted/50" />
+        <div className="aspect-video rounded-xl bg-muted/50" />
+        <div className="aspect-video rounded-xl bg-muted/50" />
+      </div>
+      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+    </>
+  );
+};

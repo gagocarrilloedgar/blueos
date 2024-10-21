@@ -1,6 +1,5 @@
 import { AuthSession, Session as SupbaseSession } from "@supabase/supabase-js";
 
-
 export type Account = {
   id: number;
   name: string;
@@ -13,6 +12,6 @@ export interface AuthRepository {
   onAuthChange: (setSession: (session: AuthSession | null) => void) => {
     unsubscribe: () => void;
   };
-  getAccount: (userId: string) => Promise<Account>;
+  getAccount: (userId: string) => Promise<Account | null>;
   logOut: () => Promise<void>;
 }

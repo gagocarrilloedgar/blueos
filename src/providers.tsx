@@ -7,6 +7,7 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import { Toaster } from "@/components/ui/toaster";
 import { defaultLocale, dynamicActivate } from "./config";
 import { router } from "./router";
 
@@ -21,6 +22,7 @@ export const Providers = () => {
       <TooltipProvider>
         <ThemeProvider defaultTheme="light" storageKey="blue-ui-theme">
           <RouterProvider router={router} />
+          <Toaster />
         </ThemeProvider>
       </TooltipProvider>
     </I18nProvider>

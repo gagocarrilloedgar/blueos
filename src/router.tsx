@@ -1,12 +1,15 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { createSupabaseAuthRepository } from "./modules/auth/infra/SupabaseAuthRepository";
+import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
 import { Login, SignUp } from "./pages/auth";
 import { AuthProvider } from "./pages/auth/AuthProvider";
-import { Dashboard } from "./pages/dashboard";
+import Page from "./pages/dashboard/Dashboard";
 import { App } from "./pages/landing";
 import { Onboarding } from "./pages/onboarding/Onboarding";
+import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
 
 const repo = createSupabaseAuthRepository();
+const onboardingRepo = createSupabaseOnboardinRepository();
 
 export const router = createBrowserRouter([
   {
@@ -23,22 +26,26 @@ export const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login authRepo={repo} />
+        element: <Login />
       },
       {
         path: "/signup",
-        element: <SignUp authRepo={repo} />
+        element: <SignUp />
       },
       {
         path: "/onboarding",
-        element: <Onboarding authRepo={repo} />
+        element: (
+          <OnboardingProvider repo={onboardingRepo}>
+            <Onboarding />
+          </OnboardingProvider>
+        )
       },
       {
         path: "/app",
         children: [
           {
             index: true,
-            element: <Dashboard authRepo={repo} />
+            element: <Page />
           }
         ]
       }

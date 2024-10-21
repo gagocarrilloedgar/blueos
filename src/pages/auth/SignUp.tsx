@@ -6,13 +6,13 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { googleSignIn } from "@/modules/auth/application";
-import { AuthRepository } from "@/modules/auth/domain";
+import { useAuth } from "@/pages/auth/AuthProvider";
 import { Trans } from "@lingui/macro";
 import { DotBackground } from "./DotBackground";
 
-export function SignUp({ authRepo }: { authRepo: AuthRepository }) {
-  const signIn = () => googleSignIn(authRepo)("http://localhost:5173/app");
+export function SignUp() {
+  const { googleSignIn } = useAuth();
+  const signIn = () => googleSignIn("http://localhost:5173/app");
 
   return (
     <div className="h-screen w-screen flex items-center justify-center">

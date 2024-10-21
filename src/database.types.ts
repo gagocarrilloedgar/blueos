@@ -12,66 +12,87 @@ export type Database = {
       accounts: {
         Row: {
           created_at: string
+          email: string
           id: number
           name: string
-          user_id: string
+          update_at: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
+          email: string
           id?: number
           name: string
-          user_id?: string
+          update_at?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
+          email?: string
           id?: number
           name?: string
-          user_id?: string
+          update_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
-      workspace_assignments: {
+      team_assignments: {
         Row: {
           account_id: number
           created_at: string
           id: number
+          team_id: number
           updated_at: string | null
-          workspace_id: number
         }
         Insert: {
           account_id: number
           created_at?: string
           id?: number
+          team_id: number
           updated_at?: string | null
-          workspace_id: number
         }
         Update: {
           account_id?: number
           created_at?: string
           id?: number
+          team_id?: number
           updated_at?: string | null
-          workspace_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "team_assignments_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_assignments_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      workspaces: {
+      teams: {
         Row: {
           created_at: string
           id: number
           name: string
-          size: number
+          size: number | null
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
-          size?: number
+          size?: number | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
-          size?: number
+          size?: number | null
         }
         Relationships: []
       }
@@ -80,13 +101,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_account_team_assignment: {
+        Args: {
+          account_name: string
+          team_name: string
+          user_id: string
+          email: string
+        }
+        Returns: Database["public"]["CompositeTypes"]["account_team_assignment_result"]
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      account_team_assignment_result: {
+        account_id: number | null
+        team_id: number | null
+      }
     }
   }
 }
