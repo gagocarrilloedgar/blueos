@@ -1,18 +1,12 @@
-import {
-  Forward,
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  type LucideIcon
-} from "lucide-react"
+import { Forward, Frame, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -20,29 +14,23 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
+  useSidebar
+} from "@/components/ui/sidebar";
+import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
 
-export function NavChats({
-  projects,
-}: {
-  projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
-}) {
-  const { isMobile } = useSidebar()
+export function NavChats() {
+  const { isMobile } = useSidebar();
+  const { chats } = useLayoutContext();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Chats</SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
+        {chats.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
-                <item.icon />
+                <Frame />
                 <span>{item.name}</span>
               </a>
             </SidebarMenuButton>
@@ -59,16 +47,16 @@ export function NavChats({
                 align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
-                  <Pencil className="mr-2 w-5 h-5 text-muted-foreground" />
+                  <Pencil className="mr-2 w-4 h-4 text-muted-foreground" />
                   <span>Edit chat</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Forward className="mr-2 w-5 h-5 text-muted-foreground" />
+                  <Forward className="mr-2 w-4 h-4 text-muted-foreground" />
                   <span>Share chat</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Trash2 className="mr-2 w-5 h-5 text-muted-foreground" />
+                  <Trash2 className="mr-2 w-4 h-4 text-muted-foreground" />
                   <span>Delete chat</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -78,7 +66,7 @@ export function NavChats({
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
             <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
+            <span>New chat</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

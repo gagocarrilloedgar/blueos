@@ -1,15 +1,9 @@
 import {
-  AudioWaveform,
   BookOpen,
-  Command,
   FilesIcon,
   Folders,
-  Frame,
-  GalleryVerticalEnd,
   LayoutDashboard,
   List,
-  Map,
-  PieChart,
   Send,
   Users
 } from "lucide-react";
@@ -34,27 +28,10 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg"
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise"
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup"
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free"
-    }
-  ],
   navMain: [
     {
       title: "Overview",
-      url: "/app",
+      url: "",
       icon: LayoutDashboard,
       isActive: true
     },
@@ -88,23 +65,6 @@ const data = {
       url: "/clients",
       icon: Users
     }
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map
-    }
   ]
 };
 
@@ -112,11 +72,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavChats projects={data.projects} />
+        <NavChats />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

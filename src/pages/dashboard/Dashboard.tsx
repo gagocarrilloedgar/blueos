@@ -13,6 +13,10 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from "@/components/ui/sidebar";
+import { getTeamInitials } from "@/modules/teams/domain/TeamsRepository";
+import { Trans } from "@lingui/macro";
+import { Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvider";
 
 export default function Page() {
   return (
@@ -23,36 +27,51 @@ export default function Page() {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <Breadcrumbs />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <Skeletons />
+          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
-const Skeletons = () => {
-  return (
-    <>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
+const Breadcrumbs = () => {
+  const { pathname } = useLocation();
+  const { account } = useAuth();
+  const isMorning = new Date().getHours() <= 12;
+  const title = isMorning ? "Morning" : "Hello" + account?.name.split(" ")[0];
+
+  if (pathname === "/app")
+    return (
+      <div className="flex items-center gap-2">
+        <div className="flex text-sm aspect-square size-9 items-center justify-center rounded-full bg-indigo-100 text-sidebar-primary">
+          {getTeamInitials(account?.name ?? "")}
+        </div>
+        <span className="flex flex-col">
+          <p className="leading-5 font-bold text-lg text-primary">{title}</p>
+          <p className="text-sm text-muted-foreground">
+            <Trans>Here's an onverview of your projects</Trans>
+          </p>
+        </span>
       </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-    </>
+    );
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem className="hidden md:block">
+          <BreadcrumbLink href="#">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator className="hidden md:block" />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   );
+};
+
+export const Skeletons = () => {
 };
