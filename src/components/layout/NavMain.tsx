@@ -9,6 +9,7 @@ import {
   SidebarMenuItem
 } from "@/components/ui/sidebar";
 import { useLocation } from "react-router-dom";
+import { ModeToggle } from "../ModeToggle";
 
 export function NavMain({
   items
@@ -27,6 +28,7 @@ export function NavMain({
   const { pathname } = useLocation();
   return (
     <SidebarGroup>
+      <ModeToggle />
       <SidebarMenuButton tooltip="notifications">
         <Bell />
         <a href="/notifications">Notifications</a>
