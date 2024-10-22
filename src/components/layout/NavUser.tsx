@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar
 } from "@/components/ui/sidebar";
+import { ModeToggle } from "../ModeToggle";
 
 export function NavUser({
   user
@@ -85,6 +86,7 @@ export function NavUser({
                 <BadgeCheck className="mr-2 w-4 h-4" />
                 Account
               </DropdownMenuItem>
+              <ModeToggle />
               <DropdownMenuItem>
                 <CreditCard className="mr-2 w-4 h-4" />
                 Billing
