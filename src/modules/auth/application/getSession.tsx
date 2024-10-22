@@ -1,4 +1,5 @@
 import { AuthRepository } from "@/modules/auth/domain";
+import { getTeamInitials } from "@/modules/teams/domain/TeamsRepository";
 
 export const getSession = (repo: AuthRepository) => {
   return async function () {
@@ -13,7 +14,12 @@ export const getSession = (repo: AuthRepository) => {
     const account = await repo.getAccount(session.user.id);
 
     return {
-      account,
+      account: !account
+        ? null
+        : {
+            ...account,
+            initials: getTeamInitials(account?.name ?? "")
+          },
       session
     };
   };

@@ -15,7 +15,7 @@ export const createSupabaseAuthRepository = (): AuthRepository => {
 const getAccount = async (userId: string) => {
   const { data: account, error } = await supabase
     .from("accounts")
-    .select("id, name")
+    .select("id, name, email")
     .eq("user_id", userId);
 
   if (error) {
