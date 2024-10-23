@@ -2,11 +2,11 @@ import { useToast } from "@/hooks/use-toast";
 import { createAccount } from "@/modules/onboarding/application";
 import { OnboardingRepository } from "@/modules/onboarding/domain/OnboardingRepository";
 import {
-    createContext,
-    PropsWithChildren,
-    useCallback,
-    useContext,
-    useMemo
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useMemo
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
