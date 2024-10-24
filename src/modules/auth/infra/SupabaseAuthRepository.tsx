@@ -24,14 +24,23 @@ const getAccount = async (userId: string) => {
 
   return account ? account[0] : null;
 };
+
 const logOut = async () => {
   await supabase.auth.signOut();
 };
 
 const getSession = async () => {
-  const sessionData = await supabase.auth.getSession();
+  try {
+    const { data, error } = await supabase.auth.getSession();
 
-  return sessionData.data.session;
+    if (error) {
+      throw new Error("Error connecting to supabase");
+    }
+
+    return data.session;
+  } catch {
+    throw new Error("Error connecting to Supabase");
+  }
 };
 
 const googleSignIn = async (redirectTo: string) => {
@@ -44,9 +53,15 @@ const googleSignIn = async (redirectTo: string) => {
 };
 
 const onAuthChange = (setSession: (session: Session | null) => void) => {
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    setSession(session);
-  });
+  try {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
 
-  return { unsubscribe: data.subscription.unsubscribe };
+    return { unsubscribe: data.subscription.unsubscribe };
+  } catch {
+    return {
+      unsubscribe: null
+    };
+  }
 };

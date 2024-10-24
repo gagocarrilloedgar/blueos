@@ -13,7 +13,7 @@
     "db:sync": "supabase db pull",
     "db:link": "supabase stop && link --project-ref btgmskgrxklhtwwntiao",
     "db:migrate:up": "supabase migration up",
-    "run": "supabase start && pnpm run dev",
+    "start": "supabase start && pnpm run dev",
     "extract": "lingui extract",
     "compile": "lingui compile"
   },

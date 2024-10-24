@@ -15,7 +15,6 @@ import {
 } from "@/modules/auth/application";
 import { AuthRepository } from "@/modules/auth/domain";
 import { Account } from "@/modules/auth/domain/AuthRepository";
-import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({
@@ -25,8 +24,6 @@ export const AuthProvider = ({
   const [session, setSession] = useState<Session | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const authService = useMemo(
     () => ({
@@ -44,23 +41,16 @@ export const AuthProvider = ({
   }, [authService]);
 
   useEffect(() => {
-    initSession().finally(() => setLoading(false));
+    initSession()
+      .catch(() => setLoading(false))
+      .finally(() => setLoading(false));
 
     const { unsubscribe } = authService.onAuthChange(setSession);
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) return unsubscribe();
+    };
   }, [authService, initSession]);
-
-  const isEntryPoint =
-    pathname === "/" || pathname === "/login" || pathname === "/signup";
-
-  useEffect(() => {
-    if (loading || isEntryPoint || account) return;
-
-    if (!account && session) navigate("/onboarding");
-
-    if (!session) navigate("/login");
-  }, [navigate, isEntryPoint, session, loading, account]);
 
   const value = useMemo(
     () => ({
@@ -75,3 +65,5 @@ export const AuthProvider = ({
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;

@@ -13,7 +13,7 @@ export interface AuthRepository {
   googleSignIn: (redirectTo: string) => Promise<void>;
   getSession: () => Promise<Session | null>;
   onAuthChange: (setSession: (session: AuthSession | null) => void) => {
-    unsubscribe: () => void;
+    unsubscribe: (() => void) | null;
   };
   getAccount: (userId: string) => Promise<Omit<Account, "initials"> | null>;
   logOut: () => Promise<void>;
