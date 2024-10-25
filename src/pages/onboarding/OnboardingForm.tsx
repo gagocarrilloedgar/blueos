@@ -106,7 +106,7 @@ export function OnboardingForm() {
         </Button>*/}
         <FormDescription>
           You can always update this in your{" "}
-          <a className="text-blue-500 underline" href="/app/settings">
+          <a className="text-blue-500 underline" href="/settings">
             workspace settings
           </a>
         </FormDescription>

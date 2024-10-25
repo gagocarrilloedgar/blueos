@@ -12,7 +12,7 @@ import { DotBackground } from "./DotBackground";
 
 export function SignUp() {
   const { googleSignIn } = useAuth();
-  const signIn = () => googleSignIn("http://localhost:5173/app");
+  const signIn = () => googleSignIn("http://localhost:5173");
 
   return (
     <div className="h-screen w-screen flex items-center justify-center">

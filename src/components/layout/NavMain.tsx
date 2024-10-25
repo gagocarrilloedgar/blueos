@@ -34,7 +34,7 @@ export function NavMain({
       <SidebarGroupLabel>Inner space</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          const fullUrl = `/app${item.url}`;
+          const fullUrl = item.url;
 
           return (
             <Collapsible

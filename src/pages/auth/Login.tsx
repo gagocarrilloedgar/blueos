@@ -13,7 +13,7 @@ import { DotBackground } from "./DotBackground";
 export function Login() {
   const { googleSignIn } = useAuth();
 
-  const signIn = () => googleSignIn("http://localhost:5173/app");
+  const signIn = () => googleSignIn("http://localhost:5173");
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <Card className="z-10 mx-auto max-w-sm">

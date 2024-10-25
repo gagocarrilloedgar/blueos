@@ -55,7 +55,7 @@ export const OnboardingProvider = ({
         title: "Everything ready",
         description: "We will now redirect you to your new workspace"
       });
-      navigate("/app");
+      navigate("/");
     },
     [repo, session, navigate, toast]
   );
