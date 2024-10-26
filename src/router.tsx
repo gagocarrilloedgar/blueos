@@ -1,4 +1,5 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { Sheet, SheetContent } from "./components/ui/sheet";
 import { createSupabaseDashboardProjectsRepository } from "./modules/dashboard/infra/SupabaseProjectsRepository";
 import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
 import { createSupabaseSidebarRepository } from "./modules/sidebar/infra/SupabaseSidebarRepository";
@@ -27,12 +28,23 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
+        path: "/",
         element: (
           <DashboardProjectsProvider projectsRepo={projectsRepo}>
             <Widgets />
+            <Outlet />
           </DashboardProjectsProvider>
-        )
+        ),
+        children: [
+          {
+            path: "/team-accounts",
+            element: (
+              <Sheet open={true}>
+                <SheetContent>text</SheetContent>
+              </Sheet>
+            )
+          }
+        ]
       },
       {
         path: "/tasks",

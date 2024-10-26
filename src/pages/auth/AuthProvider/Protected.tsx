@@ -7,9 +7,7 @@ export const Protected = ({ children }: PropsWithChildren) => {
   const { account, session, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (loading) return <>loading</>;
-
-  if (account) return <>{children}</>;
+  if (account || loading) return <>{children}</>;
 
   if (session && !account) {
     navigate("/onboarding");
