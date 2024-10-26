@@ -12,6 +12,12 @@ export interface DashboardProject {
   } | null;
 }
 
+export interface TeamAccount {
+  id: number;
+  name: string;
+  createdAt: string
+}
+
 export interface ProjectsRepository {
   createProject: (
     name: string,
@@ -20,4 +26,5 @@ export interface ProjectsRepository {
     description?: string
   ) => Promise<{ project: ProjectCreated; error?: string | null }>;
   getTeamProjects: (teamId: number) => Promise<DashboardProject[]>;
+  getTeamAccounts: (teamId: number) => Promise<TeamAccount[]>;
 }

@@ -1,8 +1,10 @@
 import { createProject } from "@/modules/dashboard/application/createProject";
 import { getProjects } from "@/modules/dashboard/application/getProjects";
+import { getTeamDashboardAccounts } from "@/modules/dashboard/application/getTeamDashboardAccount";
 import {
   DashboardProject,
-  ProjectsRepository
+  ProjectsRepository,
+  TeamAccount
 } from "@/modules/dashboard/domain/ProjectsRepository";
 import {
   PropsWithChildren,
@@ -20,6 +22,7 @@ export const DashboardProjectsProvider = ({
   children
 }: PropsWithChildren<{ projectsRepo: ProjectsRepository }>) => {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
+  const [accounts, setAccounts] = useState<TeamAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { activeTeam } = useLayoutContext();
@@ -30,13 +33,24 @@ export const DashboardProjectsProvider = ({
     setLoading(true);
 
     try {
-      const data = await getProjects(projectsRepo)({ teamId: activeTeam.id });
+      const accountsPromise = getTeamDashboardAccounts(projectsRepo)({
+        teamId: activeTeam.id
+      });
+      const projectsPromise = getProjects(projectsRepo)({
+        teamId: activeTeam.id
+      });
 
-      if (data.error || !data.projects) {
-        throw new Error("Failed to fetch projects");
+      const [projectsData, accountsData] = await Promise.all([
+        projectsPromise,
+        accountsPromise
+      ]);
+
+      if (projectsData.error || accountsData.error) {
+        throw new Error("Failed to dashboard data");
       }
 
-      setProjects(data.projects);
+      setProjects(projectsData?.projects ?? []);
+      setAccounts(accountsData.accounts);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load projects.");
@@ -82,10 +96,11 @@ export const DashboardProjectsProvider = ({
   const value = useMemo(
     () => ({
       projects,
+      accounts,
       createProject: create,
       loading: loading && !projects.length
     }),
-    [projects, loading, create]
+    [projects, loading, create, accounts]
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

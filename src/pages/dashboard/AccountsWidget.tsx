@@ -19,29 +19,29 @@ import {
 } from "@/components/ui/tooltip";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
 import { getTeamInitials } from "@/modules/sidebar/domain/SidebarRepository";
-import { ArrowUpRight, ChevronRight, Edit } from "lucide-react";
+import { ArrowUpRight, Trash } from "lucide-react";
 import { useRef } from "react";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
 
-export const ProjectsWidget = () => {
-  const { projects, loading, createProject } = useDashboardProjects();
+export const AccountsWidget = () => {
+  const { accounts, loading } = useDashboardProjects();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const title = "Projects";
-  const placeholder = "Project name";
-  const emptyState = "You haven't created any project yet";
-  const description = "List of 4 last updated projects";
   const actionLabel = "Create";
+  const title = "Team members";
+  const placeholder = "a@example.com";
+  const emptyState = "There are no team members";
+  const description = "Invite new team members to collaborate";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const name = inputRef?.current?.value;
 
-    await createProject(name);
+    await console.log(name);
   };
 
-  const isEmpty = !projects?.length;
+  const isEmpty = !accounts?.length;
 
   return (
     <Card>
@@ -58,7 +58,7 @@ export const ProjectsWidget = () => {
               </a>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>See all projects</TooltipContent>
+          <TooltipContent>See all accounts</TooltipContent>
         </Tooltip>
       </CardHeader>
       <CardContent>
@@ -78,7 +78,7 @@ export const ProjectsWidget = () => {
           </section>
         )}
         <section className="flex flex-col pb-4 gap-2">
-          {projects?.map(({ name }, index) => {
+          {accounts?.map(({ name, createdAt }, index) => {
             return (
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
@@ -89,25 +89,20 @@ export const ProjectsWidget = () => {
                       {getTeamInitials(name)}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
-                    {name}
-                  </p>
+                  <div>
+                    <p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {name}
+                    </p>
+                    <p className="text-xs overflow-hidden text-muted-foreground whitespace-nowrap overflow-ellipsis">{`Active since: ${createdAt}`}</p>
+                  </div>
                   <span className="flex ml-auto gap-1">
                     <Tooltip>
                       <TooltipTrigger>
                         <Button type="button" size="icon" variant="ghost">
-                          <Edit className="w-4 h-4" />
+                          <Trash className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Edit</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button type="button" size="icon" variant="ghost">
-                          <ChevronRight className="w-4 h-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Open</TooltipContent>
+                      <TooltipContent>Remove from the team</TooltipContent>
                     </Tooltip>
                   </span>
                 </div>
@@ -120,7 +115,7 @@ export const ProjectsWidget = () => {
           <div className="flex flex-row gap-2 pt-4">
             <Input
               ref={inputRef}
-              name="dashboard-project-name"
+              name="dashboard-account-name"
               type="text"
               className="h-8"
               placeholder={placeholder}
