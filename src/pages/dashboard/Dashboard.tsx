@@ -16,8 +16,6 @@ import {
 import { Trans } from "@lingui/macro";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { ActionCard } from "./ActionCard";
-import { ProjectsWidget } from "./ProjectsWidget";
 
 export default function Page() {
   return (
@@ -70,25 +68,5 @@ const Breadcrumbs = () => {
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
-  );
-};
-
-export const Skeletons = () => {
-  return (
-    <div className="pt-2">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <ProjectsWidget />
-        <ActionCard
-          title="Team members"
-          placeholder="a@example.com"
-          emptyState="There are no team members"
-          description="Invite new team members to collaborate"
-        />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-      </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-    </div>
   );
 };

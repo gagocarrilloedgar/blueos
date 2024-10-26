@@ -1,5 +1,5 @@
-import { createProject as create } from "@/modules/dashboard/application/createProject";
-import { getProjects as appGetProjects } from "@/modules/dashboard/application/getProjects";
+import { createProject } from "@/modules/dashboard/application/createProject";
+import { getProjects } from "@/modules/dashboard/application/getProjects";
 import {
   DashboardProject,
   ProjectsRepository
@@ -24,35 +24,32 @@ export const DashboardProjectsProvider = ({
 
   const { activeTeam } = useLayoutContext();
 
-  const getProjects = useMemo(
-    () => appGetProjects(projectsRepo),
-    [projectsRepo]
-  );
-
-  const newProject = useMemo(() => create(projectsRepo), [projectsRepo]);
-
   const loadProjects = useCallback(async () => {
-    setLoading(true);
     if (!activeTeam) return;
-    const data = await getProjects({ teamId: activeTeam.id });
 
-    if (data.error || !data.projects) {
+    setLoading(true);
+
+    try {
+      const data = await getProjects(projectsRepo)({ teamId: activeTeam.id });
+
+      if (data.error || !data.projects) {
+        throw new Error("Failed to fetch projects");
+      }
+
+      setProjects(data.projects);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load projects.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setProjects(data.projects);
-  }, [activeTeam, getProjects]);
+  }, [activeTeam, projectsRepo]);
 
   useEffect(() => {
-    loadProjects()
-      .catch(() => {
-        setLoading(false);
-      })
-      .finally(() => setLoading(false));
+    loadProjects();
   }, [loadProjects]);
 
-  const createProject = useCallback(
+  const create = useCallback(
     async (name?: string) => {
       if (!activeTeam) return;
       if (!name) {
@@ -62,7 +59,7 @@ export const DashboardProjectsProvider = ({
         return;
       }
 
-      const resp = await newProject({
+      const resp = await createProject(projectsRepo)({
         name,
         teamId: activeTeam.id
       });
@@ -76,13 +73,19 @@ export const DashboardProjectsProvider = ({
       }
 
       toast.success("Project created successfully");
+      // Reload projects after creating a new one
+      loadProjects();
     },
-    [activeTeam, newProject]
+    [activeTeam, projectsRepo, loadProjects]
   );
 
   const value = useMemo(
-    () => ({ projects, createProject, loading }),
-    [projects, createProject, loading]
+    () => ({
+      projects,
+      createProject: create,
+      loading: loading && !projects.length
+    }),
+    [projects, loading, create]
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

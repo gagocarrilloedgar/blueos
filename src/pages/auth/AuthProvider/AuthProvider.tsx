@@ -1,10 +1,5 @@
-import {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 
 import { Session } from "@supabase/supabase-js";
 
@@ -25,42 +20,33 @@ export const AuthProvider = ({
   const [account, setAccount] = useState<Account | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const authService = useMemo(
-    () => ({
-      googleSignIn: googleSignIn(authRepo),
-      getSession: getSession(authRepo),
-      onAuthChange: onAuthChange(authRepo)
-    }),
-    [authRepo]
-  );
-
   const initSession = useCallback(async () => {
-    const newSession = await authService.getSession();
-    setSession(newSession.session);
-    setAccount(newSession.account);
-  }, [authService]);
+    const newSession = await getSession(authRepo)();
+    if (newSession.session) setSession(newSession.session);
+    if (newSession.account) setAccount(newSession.account);
+  }, [authRepo]);
 
   useEffect(() => {
-    initSession()
-      .catch(() => setLoading(false))
-      .finally(() => setLoading(false));
-
-    const { unsubscribe } = authService.onAuthChange(setSession);
+    const { unsubscribe } = onAuthChange(authRepo)(setSession);
 
     return () => {
       if (unsubscribe) return unsubscribe();
     };
-  }, [authService, initSession]);
+  }, []);
+
+  useEffect(() => {
+    initSession().finally(() => setLoading(false));
+  }, []);
 
   const value = useMemo(
     () => ({
       session,
       account,
       loading,
-      googleSignIn: authService.googleSignIn,
-      getSession: authService.getSession
+      googleSignIn: googleSignIn(authRepo),
+      getSession: getSession(authRepo)
     }),
-    [session, account, loading, authService]
+    [authRepo, account, session, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

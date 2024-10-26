@@ -1,5 +1,7 @@
 import {
+  Bell,
   BookOpen,
+  Files,
   FilesIcon,
   Folders,
   LayoutDashboard,
@@ -17,9 +19,13 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail
 } from "@/components/ui/sidebar";
+import { useLocation } from "react-router-dom";
+import { NavProjects } from "./NavProjects";
 
 // This is sample data.
 const data = {
@@ -29,12 +35,6 @@ const data = {
     avatar: "/avatars/shadcn.jpg"
   },
   navMain: [
-    {
-      title: "Overview",
-      url: "",
-      icon: LayoutDashboard,
-      isActive: true
-    },
     {
       title: "Tasks",
       url: "/tasks",
@@ -65,6 +65,18 @@ const data = {
       url: "/clients",
       icon: Users
     }
+  ],
+  private: [
+    {
+      title: "Tasks",
+      url: "/tasks",
+      icon: List
+    },
+    {
+      title: "Documents",
+      url: "/documents",
+      icon: Files
+    }
   ]
 };
 
@@ -74,9 +86,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <TeamSwitcher />
       </SidebarHeader>
+      <OverviewNav />
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavProjects />
         <NavChats />
+        <NavMain title="Private" items={data.private} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
@@ -85,3 +99,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
+
+const OverviewNav = () => {
+  const { pathname } = useLocation();
+
+  return (
+    <SidebarGroup>
+      <SidebarMenuButton
+        isActive={pathname === "/notifications"}
+        tooltip="notifications"
+      >
+        <Bell />
+        <a href="/notifications">Notifications</a>
+      </SidebarMenuButton>
+      <SidebarMenuButton isActive={pathname === "/"} tooltip="overview">
+        <LayoutDashboard />
+        <a href="/notifications">Overview</a>
+      </SidebarMenuButton>
+    </SidebarGroup>
+  );
+};

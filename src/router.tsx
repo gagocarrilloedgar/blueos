@@ -1,17 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
 import { createSupabaseDashboardProjectsRepository } from "./modules/dashboard/infra/SupabaseProjectsRepository";
 import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
-import { createSupabaseTeamsRepository } from "./modules/teams/infra/SupabaseTeamsRepository";
+import { createSupabaseSidebarRepository } from "./modules/sidebar/infra/SupabaseSidebarRepository";
 import { Login, SignUp } from "./pages/auth";
 import { Protected } from "./pages/auth/AuthProvider/Protected";
-import Page, { Skeletons } from "./pages/dashboard/Dashboard";
+import Page from "./pages/dashboard/Dashboard";
 import { DashboardProjectsProvider } from "./pages/dashboard/DashboardProjectsProvider/DashboardProjectsProvider";
 import { LayoutProvider } from "./pages/dashboard/LayoutProvider";
+import { Widgets } from "./pages/dashboard/Widgets";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
 
 const onboardingRepo = createSupabaseOnboardinRepository();
-const teamsRepo = createSupabaseTeamsRepository();
+const teamsRepo = createSupabaseSidebarRepository();
 const projectsRepo = createSupabaseDashboardProjectsRepository();
 
 export const router = createBrowserRouter([
@@ -20,16 +21,18 @@ export const router = createBrowserRouter([
     element: (
       <Protected>
         <LayoutProvider teamsRepo={teamsRepo}>
-          <DashboardProjectsProvider projectsRepo={projectsRepo}>
-            <Page />
-          </DashboardProjectsProvider>
+          <Page />
         </LayoutProvider>
       </Protected>
     ),
     children: [
       {
         index: true,
-        element: <Skeletons />
+        element: (
+          <DashboardProjectsProvider projectsRepo={projectsRepo}>
+            <Widgets />
+          </DashboardProjectsProvider>
+        )
       },
       {
         path: "/tasks",

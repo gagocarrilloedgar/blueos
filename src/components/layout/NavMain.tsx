@@ -1,4 +1,4 @@
-import { Bell, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -11,7 +11,8 @@ import {
 import { useLocation } from "react-router-dom";
 
 export function NavMain({
-  items
+  items,
+  title
 }: {
   items: {
     title: string;
@@ -23,15 +24,12 @@ export function NavMain({
       url: string;
     }[];
   }[];
+  title: string;
 }) {
   const { pathname } = useLocation();
   return (
     <SidebarGroup>
-      <SidebarMenuButton tooltip="notifications">
-        <Bell />
-        <a href="/notifications">Notifications</a>
-      </SidebarMenuButton>
-      <SidebarGroupLabel>Inner space</SidebarGroupLabel>
+      <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           const fullUrl = item.url;

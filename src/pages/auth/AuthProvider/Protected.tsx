@@ -18,6 +18,5 @@ export const Protected = ({ children }: PropsWithChildren) => {
 
   if (!session) {
     navigate("/login");
-    return;
   }
 };

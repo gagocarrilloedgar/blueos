@@ -17,8 +17,8 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
-import { getTeamInitials } from "@/modules/teams/domain/TeamsRepository";
-import { ChevronRight, Edit } from "lucide-react";
+import { getTeamInitials } from "@/modules/sidebar/domain/SidebarRepository";
+import { ArrowUpRight, ChevronRight, Edit } from "lucide-react";
 import { useRef } from "react";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
 
@@ -29,7 +29,7 @@ export const ProjectsWidget = () => {
   const title = "Projects";
   const placeholder = "Project name";
   const emptyState = "You haven't created any project yet";
-  const description = "List of last updated projects";
+  const description = "List of 4 last updated projects";
   const actionLabel = "Create";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,13 +41,24 @@ export const ProjectsWidget = () => {
   };
 
   const isEmpty = !projects?.length;
-  const isMaxLength = projects?.length === 4;
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+      <CardHeader className="flex flex-row items-start">
+        <span>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </span>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button size="icon" variant="ghost" className="ml-auto" asChild>
+              <a href="/projects">
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>See all projects</TooltipContent>
+        </Tooltip>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
@@ -100,11 +111,6 @@ export const ProjectsWidget = () => {
               </Card>
             );
           })}
-          {isMaxLength && (
-            <Button variant="ghost" asChild>
-              <a href="/projects">View all</a>
-            </Button>
-          )}
         </section>
         <Separator />
         <form onSubmit={onSubmit}>

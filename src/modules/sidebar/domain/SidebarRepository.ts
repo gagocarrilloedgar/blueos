@@ -7,13 +7,20 @@ export interface Team extends CreatedTeam {
   plan: string;
 }
 
-export interface TeamsRepository {
+export interface SidebarProject {
+  id: number;
+  name: string;
+}
+
+export interface SidebarRepository {
   getTeams: (accountId: number) => Promise<CreatedTeam[]>;
+  getTeamProjects: (teamId: number) => Promise<SidebarProject[]>;
 }
 
 export const getTeamInitials = (name: string) => {
   return name
     .split(" ")
+    .slice(0, 2)
     .map((name) => name.charAt(0))
     .join("");
 };

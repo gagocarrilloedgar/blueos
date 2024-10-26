@@ -1,16 +1,12 @@
 import { supabase } from "@/config/clients";
-import { TeamsRepository } from "../domain/TeamsRepository";
 
-export const createSupabaseTeamsRepository = (): TeamsRepository => {
-  return { getTeams };
-};
-
-const getTeams = async (accountId: number) => {
+export const getSidebarTeams = async (accountId: number) => {
   try {
     const { data, error } = await supabase
       .from("team_assignments")
       .select("teams!inner(id, name)")
-      .eq("account_id", accountId);
+      .eq("account_id", accountId)
+      .limit(5);
 
     if (error || !data) return [];
 

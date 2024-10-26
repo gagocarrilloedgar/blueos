@@ -1,5 +1,6 @@
-import { DashboardProject } from "@/modules/dashboard/domain/ProjectsRepository";
 import { createContext } from "react";
+
+import { DashboardProject } from "@/modules/dashboard/domain/ProjectsRepository";
 
 interface ContextState {
   projects: DashboardProject[];

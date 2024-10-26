@@ -1,16 +1,23 @@
-import { getTeams } from "@/modules/teams/application/getTeams";
-import { Team, TeamsRepository } from "@/modules/teams/domain/TeamsRepository";
+import { getSidebarProjects } from "@/modules/sidebar/application/getSidebarProjects";
+import { getTeams } from "@/modules/sidebar/application/getTeams";
 import {
-    createContext,
-    PropsWithChildren,
-    useCallback,
-    useEffect,
-    useState
+  SidebarProject,
+  SidebarRepository,
+  Team
+} from "@/modules/sidebar/domain/SidebarRepository";
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
 } from "react";
 import { useAuth } from "../auth/AuthProvider";
 
 interface ContextState {
   teams: Team[];
+  projects: SidebarProject[];
   chats: {
     id: number;
     name: string;
@@ -25,9 +32,12 @@ export const LayoutContext = createContext({} as ContextState);
 export const LayoutProvider = ({
   teamsRepo,
   children
-}: PropsWithChildren<{ teamsRepo: TeamsRepository }>) => {
+}: PropsWithChildren<{ teamsRepo: SidebarRepository }>) => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [activeTeam, setActiveTeam] = useState<Team | null>(null);
+  const [projects, setProjects] = useState<SidebarProject[]>([]);
+  const { account } = useAuth();
+
   const [chats] = useState<
     {
       id: number;
@@ -35,26 +45,55 @@ export const LayoutProvider = ({
       url: string;
     }[]
   >(new Array(1).fill({ id: 1, name: "general", url: "/general" }));
-  const { account } = useAuth();
 
-  const fetchTeams = useCallback(async () => {
+  const fetchProjects = useCallback(
+    async (teamId: number) => {
+      const loadedProjects = await getSidebarProjects(teamsRepo)({ teamId });
+      if (loadedProjects.projects) {
+        setProjects(loadedProjects.projects);
+      }
+    },
+    [teamsRepo]
+  );
+
+  const fetchInitialData = useCallback(async () => {
     if (!account) return;
-    const teams = await getTeams(teamsRepo)(account.id);
+    const fetchedTeams = await getTeams(teamsRepo)(account.id);
 
-    setTeams(teams);
-    setActiveTeam(teams[0]);
-  }, [account, teamsRepo]);
+    setTeams(fetchedTeams);
+    const currentTeam = fetchedTeams[0];
+    setActiveTeam(currentTeam);
 
-  const setTeam = (team: Team) => {
-    setActiveTeam(team);
-  };
+    if (currentTeam) {
+      fetchProjects(currentTeam.id);
+    }
+  }, [account, teamsRepo, fetchProjects]);
+
+  const setTeam = useCallback(
+    (team: Team) => {
+      setActiveTeam(team);
+      fetchProjects(team.id);
+    },
+    [fetchProjects]
+  );
 
   useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+    fetchInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
+
+  const value = useMemo(
+    () => ({
+      teams,
+      activeTeam,
+      chats,
+      setTeam,
+      projects
+    }),
+    [teams, activeTeam, chats, setTeam, projects]
+  );
+
   return (
-    <LayoutContext.Provider value={{ teams, activeTeam, chats, setTeam }}>
-      {children}
-    </LayoutContext.Provider>
+    <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>
   );
 };

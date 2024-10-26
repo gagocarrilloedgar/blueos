@@ -1,5 +1,5 @@
 import { AuthRepository } from "@/modules/auth/domain";
-import { getTeamInitials } from "@/modules/teams/domain/TeamsRepository";
+import { getTeamInitials } from "@/modules/sidebar/domain/SidebarRepository";
 
 export const getSession = (repo: AuthRepository) => {
   return async function () {
