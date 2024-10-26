@@ -1,4 +1,3 @@
-import { useToast } from "@/hooks/use-toast";
 import { createAccount } from "@/modules/onboarding/application";
 import { OnboardingRepository } from "@/modules/onboarding/domain/OnboardingRepository";
 import {
@@ -9,6 +8,7 @@ import {
   useMemo
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useAuth } from "../auth/AuthProvider";
 
 interface ContextState {
@@ -25,7 +25,6 @@ export const OnboardingProvider = ({
   repo
 }: PropsWithChildren<{ repo: OnboardingRepository }>) => {
   const { session } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const createNewAccount = useCallback(
@@ -43,21 +42,18 @@ export const OnboardingProvider = ({
       );
 
       if (!res) {
-        toast({
-          title: "Ups, something went wrong",
+        toast.error("Ups, something went wrong", {
           description:
-            "There was an error creating your account. Please try again later",
-          variant: "destructive"
+            "There was an error creating your account. Please try again later"
         });
         return;
       }
-      toast({
-        title: "Everything ready",
+      toast.success("Everything ready", {
         description: "We will now redirect you to your new workspace"
       });
       navigate("/");
     },
-    [repo, session, navigate, toast]
+    [repo, session, navigate]
   );
 
   const value = useMemo(

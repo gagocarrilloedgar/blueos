@@ -1,5 +1,5 @@
 import { createProject } from "./createProject";
-import { getTeamProjects } from "./getProject";
+import { getTeamProjects } from "./getTeamProjects";
 
 export const createSupabaseDashboardProjectsRepository = () => {
   return { createProject, getTeamProjects };

@@ -7,7 +7,9 @@ export const getTeamProjects: ProjectsRepository["getTeamProjects"] = async (
   const projects = await supabase
     .from("projects")
     .select("id, name, clients (id,name)")
-    .eq("team_id", teamId);
+    .eq("team_id", teamId)
+    .limit(4)
+    .order("created_at", { ascending: false });
 
   if (projects.error) {
     throw new Error("Error while fetching your project");

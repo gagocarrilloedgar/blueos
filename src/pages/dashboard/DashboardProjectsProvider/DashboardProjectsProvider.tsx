@@ -1,4 +1,3 @@
-import { useToast } from "@/hooks/use-toast";
 import { createProject as create } from "@/modules/dashboard/application/createProject";
 import { getProjects as appGetProjects } from "@/modules/dashboard/application/getProjects";
 import {
@@ -12,6 +11,7 @@ import {
   useMemo,
   useState
 } from "react";
+import { toast } from "sonner";
 import { useLayoutContext } from "../useLayoutContext";
 import { Context } from "./Context";
 
@@ -22,7 +22,6 @@ export const DashboardProjectsProvider = ({
   const [projects, setProjects] = useState<DashboardProject[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { toast } = useToast();
   const { activeTeam } = useLayoutContext();
 
   const getProjects = useMemo(
@@ -57,10 +56,8 @@ export const DashboardProjectsProvider = ({
     async (name?: string) => {
       if (!activeTeam) return;
       if (!name) {
-        toast({
-          title: "Ups, there's been an error",
-          description: "Project name can not be empty",
-          variant: "destructive"
+        toast.error("Ups, there's been an error", {
+          description: "Project name can not be empty"
         });
         return;
       }
@@ -71,20 +68,16 @@ export const DashboardProjectsProvider = ({
       });
 
       if (resp.error) {
-        toast({
-          title: "Ups, there's been an error",
+        toast.error("Ups, there's been an error", {
           description:
-            "There's been an error creating the project. Please try again later",
-          variant: "destructive"
+            "There's been an error creating the project. Please try again later"
         });
         return;
       }
 
-      toast({
-        title: "Project created successfully"
-      });
+      toast.success("Project created successfully");
     },
-    [activeTeam, toast, newProject]
+    [activeTeam, newProject]
   );
 
   const value = useMemo(

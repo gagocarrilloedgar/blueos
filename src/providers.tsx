@@ -7,7 +7,7 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { defaultLocale, dynamicActivate } from "./config";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { createSupabaseAuthRepository } from "./modules/auth/infra/SupabaseAuthRepository";
