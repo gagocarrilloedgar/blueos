@@ -44,14 +44,14 @@ export const ProjectsWidget = () => {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-start">
+      <CardHeader className="flex flex-row">
         <span>
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </span>
         <Tooltip>
-          <TooltipTrigger>
-            <Button size="icon" variant="ghost" className="ml-auto" asChild>
+          <TooltipTrigger className="ml-auto">
+            <Button size="icon" variant="ghost" asChild>
               <a href="/projects">
                 <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -82,7 +82,9 @@ export const ProjectsWidget = () => {
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
                   <Avatar className="h-9 w-9">
-                    <AvatarFallback className="uppercase">
+                    <AvatarFallback
+                      className={`uppercase ${getRandomPastelColor()}`}
+                    >
                       {getTeamInitials(name)}
                     </AvatarFallback>
                   </Avatar>
@@ -131,3 +133,28 @@ export const ProjectsWidget = () => {
     </Card>
   );
 };
+
+function getRandomPastelColor() {
+  const pastelColors = [
+    "bg-blue-100",
+    "bg-blue-200",
+    "bg-green-100",
+    "bg-green-200",
+    "bg-red-100",
+    "bg-red-200",
+    "bg-yellow-100",
+    "bg-yellow-200",
+    "bg-purple-100",
+    "bg-purple-200",
+    "bg-pink-100",
+    "bg-pink-200",
+    "bg-teal-100",
+    "bg-teal-200",
+    "bg-indigo-100",
+    "bg-indigo-200",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * pastelColors.length);
+
+  return pastelColors[randomIndex];
+}
