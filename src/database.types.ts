@@ -503,6 +503,10 @@ export type Database = {
         }
         Returns: Database["public"]["CompositeTypes"]["account_memberships_result"]
       }
+      get_current_account_id: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_organisations: {
         Args: {
           accountid: number
@@ -511,6 +515,12 @@ export type Database = {
           id: number
           name: string
         }[]
+      }
+      get_orgs_for_account: {
+        Args: {
+          account_id: number
+        }
+        Returns: number[]
       }
     }
     Enums: {
