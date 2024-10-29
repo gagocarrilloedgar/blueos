@@ -1,6 +1,6 @@
 import { useAuth, useSignUp } from "@clerk/clerk-react";
 import { useEffect } from "react";
-import { createBrowserRouter, useNavigate } from "react-router-dom";
+import { createBrowserRouter, Outlet, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "./components/ui/sheet";
 import { createSupabaseDashboardProjectsRepository } from "./modules/dashboard/infra/SupabaseProjectsRepository";
 import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
@@ -40,6 +40,7 @@ export default function DashboardLayout() {
   return (
     <DashboardProjectsProvider projectsRepo={projectsRepo}>
       <Widgets />
+      <Outlet />
     </DashboardProjectsProvider>
   );
 }
@@ -64,16 +65,16 @@ export const router = createBrowserRouter([
         ]
       },
       {
+        path: "/tasks",
+        element: <>Text</>
+      },
+      {
         path: "/login",
         element: <Login />
       },
       {
         path: "/signup",
         element: <SignUp />
-      },
-      {
-        path: "/tasks",
-        element: <>Text</>
       }
     ]
   },

@@ -25,7 +25,7 @@ export function NavProjects() {
 const ProjectsSection = ({ projects }: { projects: SidebarProject[] }) => {
   const { pathname } = useLocation();
 
-  const showAll = projects.length > 5;
+  const showAll = projects?.length > 5;
 
   if (!projects) return null;
 

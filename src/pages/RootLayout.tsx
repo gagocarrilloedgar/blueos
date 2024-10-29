@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/clerk-react";
 import { MultisessionAppSupport } from "@clerk/clerk-react/internal";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Layout from "./dashboard/Dashboard";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -26,7 +27,7 @@ export default function RootLayout() {
       publishableKey={PUBLISHABLE_KEY}
     >
       <MultisessionAppSupport>
-        <Outlet />
+        <Layout />
       </MultisessionAppSupport>
     </ClerkProvider>
   );
