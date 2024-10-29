@@ -10,11 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { defaultLocale, dynamicActivate } from "./config";
 import { ErrorBoundary } from "./ErrorBoundary";
-import { createSupabaseAuthRepository } from "./modules/auth/infra/SupabaseAuthRepository";
-import { AuthProvider } from "./pages/auth/AuthProvider";
 import { router } from "./router";
-
-const repo = createSupabaseAuthRepository();
 
 export const Providers = () => {
   useEffect(() => {
@@ -26,9 +22,7 @@ export const Providers = () => {
       <I18nProvider i18n={i18n}>
         <TooltipProvider>
           <ThemeProvider defaultTheme="light" storageKey="blue-ui-theme">
-            <AuthProvider authRepo={repo}>
-              <RouterProvider router={router} />
-            </AuthProvider>
+            <RouterProvider router={router} />
             <Toaster />
           </ThemeProvider>
         </TooltipProvider>

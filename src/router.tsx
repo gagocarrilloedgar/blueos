@@ -1,40 +1,65 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { SignIn, SignUp, useAuth, useSignUp } from "@clerk/clerk-react";
+import { useEffect } from "react";
+import { createBrowserRouter, Outlet, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "./components/ui/sheet";
 import { createSupabaseDashboardProjectsRepository } from "./modules/dashboard/infra/SupabaseProjectsRepository";
 import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
-import { createSupabaseSidebarRepository } from "./modules/sidebar/infra/SupabaseSidebarRepository";
-import { Login, SignUp } from "./pages/auth";
-import { Protected } from "./pages/auth/AuthProvider/Protected";
-import Page from "./pages/dashboard/Dashboard";
 import { DashboardProjectsProvider } from "./pages/dashboard/DashboardProjectsProvider/DashboardProjectsProvider";
-import { LayoutProvider } from "./pages/dashboard/LayoutProvider";
 import { Widgets } from "./pages/dashboard/Widgets";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
+import RootLayout from "./pages/RootLayout";
 
 const onboardingRepo = createSupabaseOnboardinRepository();
-const teamsRepo = createSupabaseSidebarRepository();
 const projectsRepo = createSupabaseDashboardProjectsRepository();
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Protected>
+/*
+<Protected>
         <LayoutProvider teamsRepo={teamsRepo}>
           <Page />
         </LayoutProvider>
       </Protected>
-    ),
+      */
+
+export default function DashboardLayout() {
+  const { userId, isLoaded } = useAuth();
+  const navigate = useNavigate();
+  const { signUp } = useSignUp();
+
+  const status = signUp?.status;
+
+  useEffect(() => {
+    if (isLoaded && status === "missing_requirements") {
+      navigate("/signup#/verify-email-address");
+    }
+
+    if (isLoaded && status === "abandoned") {
+      navigate("/signup");
+    }
+
+    if (isLoaded && !userId) {
+      navigate("login");
+    }
+  }, [isLoaded]);
+
+  if (!isLoaded) return "Loading...";
+
+  return (
+    <DashboardProjectsProvider projectsRepo={projectsRepo}>
+      <Widgets />
+      <Outlet />
+    </DashboardProjectsProvider>
+  );
+}
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
     children: [
       {
         path: "/",
-        element: (
-          <DashboardProjectsProvider projectsRepo={projectsRepo}>
-            <Widgets />
-            <Outlet />
-          </DashboardProjectsProvider>
-        ),
+        element: <DashboardLayout />,
         children: [
           {
             path: "/team-accounts",
@@ -49,17 +74,18 @@ export const router = createBrowserRouter([
       {
         path: "/tasks",
         element: <>Text</>
+      },
+      {
+        path: "/login",
+        element: <SignIn signUpUrl="/signup" />
+      },
+      {
+        path: "/signup",
+        element: <SignUp signInUrl="/login" />
       }
     ]
   },
-  {
-    path: "/login",
-    element: <Login />
-  },
-  {
-    path: "/signup",
-    element: <SignUp />
-  },
+
   {
     path: "/onboarding",
     element: (
