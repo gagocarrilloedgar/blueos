@@ -28,10 +28,10 @@ export const AccountsWidget = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const actionLabel = "Create";
-  const title = "Team members";
+  const title = "Organisation members";
   const placeholder = "a@example.com";
-  const emptyState = "There are no team members";
-  const description = "Invite new team members to collaborate";
+  const emptyState = "There are no organisation members";
+  const description = "Invite new organisation members to collaborate";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

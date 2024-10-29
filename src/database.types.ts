@@ -80,7 +80,7 @@ export type Database = {
           description: string | null
           id: number
           name: string
-          team_id: number
+          organisation_id: number
           updated_at: string | null
         }
         Insert: {
@@ -90,7 +90,7 @@ export type Database = {
           description?: string | null
           id?: number
           name: string
-          team_id: number
+          organisation_id: number
           updated_at?: string | null
         }
         Update: {
@@ -100,7 +100,7 @@ export type Database = {
           description?: string | null
           id?: number
           name?: string
-          team_id?: number
+          organisation_id?: number
           updated_at?: string | null
         }
         Relationships: [
@@ -119,116 +119,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "channels_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "channels_organisation_id_fkey"
+            columns: ["organisation_id"]
             isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      client_portal_assignments: {
-        Row: {
-          account_id: number
-          client_portal_id: number
-          created_at: string
-          id: number
-          updated_at: string | null
-        }
-        Insert: {
-          account_id: number
-          client_portal_id: number
-          created_at?: string
-          id?: number
-          updated_at?: string | null
-        }
-        Update: {
-          account_id?: number
-          client_portal_id?: number
-          created_at?: string
-          id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "client_portal_assignments_account_id_fkey"
-            columns: ["account_id"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "client_portal_assignments_client_portal_id_fkey"
-            columns: ["client_portal_id"]
-            isOneToOne: false
-            referencedRelation: "client_portals"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      client_portals: {
-        Row: {
-          created_at: string
-          id: number
-          name: string | null
-          team_id: number
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          team_id: number
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string | null
-          team_id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "client_portals_team_id_fkey"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]
       }
       clients: {
         Row: {
-          client_portal_id: number | null
           created_at: string
           id: number
           name: string
-          team_id: number
+          organisation_id: number
+          portal_id: number | null
           updated_at: string | null
         }
         Insert: {
-          client_portal_id?: number | null
           created_at?: string
           id?: number
           name: string
-          team_id: number
+          organisation_id: number
+          portal_id?: number | null
           updated_at?: string | null
         }
         Update: {
-          client_portal_id?: number | null
           created_at?: string
           id?: number
           name?: string
-          team_id?: number
+          organisation_id?: number
+          portal_id?: number | null
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "clients_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "clients_organisation_id_fkey"
+            columns: ["organisation_id"]
             isOneToOne: false
-            referencedRelation: "teams"
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memberships: {
+        Row: {
+          account_id: number
+          created_at: string
+          id: number
+          owner_id: number
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          account_id: number
+          created_at?: string
+          id?: number
+          owner_id: number
+          type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          account_id?: number
+          created_at?: string
+          id?: number
+          owner_id?: number
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_assignments_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -236,27 +207,33 @@ export type Database = {
       messages: {
         Row: {
           account_id: number
+          client_id: number | null
           content: string
           created_at: string
           id: number
+          organisation_id: number
           origin_id: number
           origin_type: string
           updated_at: string | null
         }
         Insert: {
           account_id: number
+          client_id?: number | null
           content: string
           created_at?: string
           id?: number
+          organisation_id: number
           origin_id: number
           origin_type?: string
           updated_at?: string | null
         }
         Update: {
           account_id?: number
+          client_id?: number | null
           content?: string
           created_at?: string
           id?: number
+          organisation_id?: number
           origin_id?: number
           origin_type?: string
           updated_at?: string | null
@@ -269,6 +246,73 @@ export type Database = {
             referencedRelation: "accounts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "messages_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisations: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          size: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          size?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          size?: number | null
+        }
+        Relationships: []
+      }
+      portals: {
+        Row: {
+          created_at: string
+          id: number
+          name: string | null
+          organisation_id: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          organisation_id: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string | null
+          organisation_id?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portals_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
         ]
       }
       projects: {
@@ -278,7 +322,7 @@ export type Database = {
           description: string | null
           id: number
           name: string
-          team_id: number
+          organisation_id: number
           updated_at: string | null
           worked_hours: number | null
         }
@@ -288,7 +332,7 @@ export type Database = {
           description?: string | null
           id?: number
           name: string
-          team_id: number
+          organisation_id: number
           updated_at?: string | null
           worked_hours?: number | null
         }
@@ -298,7 +342,7 @@ export type Database = {
           description?: string | null
           id?: number
           name?: string
-          team_id?: number
+          organisation_id?: number
           updated_at?: string | null
           worked_hours?: number | null
         }
@@ -311,10 +355,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "projects_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "projects_organisation_id_fkey"
+            columns: ["organisation_id"]
             isOneToOne: false
-            referencedRelation: "teams"
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]
@@ -322,22 +366,28 @@ export type Database = {
       task_assignments: {
         Row: {
           account_id: number | null
+          client_id: number | null
           created_at: string
           id: number
+          organisation_id: number
           task_id: number
           updated_at: string | null
         }
         Insert: {
           account_id?: number | null
+          client_id?: number | null
           created_at?: string
           id?: number
+          organisation_id: number
           task_id: number
           updated_at?: string | null
         }
         Update: {
           account_id?: number | null
+          client_id?: number | null
           created_at?: string
           id?: number
+          organisation_id?: number
           task_id?: number
           updated_at?: string | null
         }
@@ -347,6 +397,20 @@ export type Database = {
             columns: ["account_id"]
             isOneToOne: false
             referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_assignments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_assignments_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
           {
@@ -401,87 +465,62 @@ export type Database = {
           updated_at?: string | null
           worked_hours?: number | null
         }
-        Relationships: []
-      }
-      team_assignments: {
-        Row: {
-          account_id: number
-          created_at: string
-          id: number
-          team_id: number
-          updated_at: string | null
-        }
-        Insert: {
-          account_id: number
-          created_at?: string
-          id?: number
-          team_id: number
-          updated_at?: string | null
-        }
-        Update: {
-          account_id?: number
-          created_at?: string
-          id?: number
-          team_id?: number
-          updated_at?: string | null
-        }
         Relationships: [
           {
-            foreignKeyName: "team_assignments_account_id_fkey"
-            columns: ["account_id"]
+            foreignKeyName: "tasks_client_id_fkey"
+            columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: "accounts"
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "team_assignments_team_id_fkey"
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "teams"
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]
-      }
-      teams: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-          size: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-          size?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
-          size?: number | null
-        }
-        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      create_account_team_assignment: {
+      create_organisation_membership: {
         Args: {
           account_name: string
-          team_name: string
+          organisation_name: string
           user_id: string
           email: string
         }
-        Returns: Database["public"]["CompositeTypes"]["account_team_assignment_result"]
+        Returns: Database["public"]["CompositeTypes"]["account_memberships_result"]
+      }
+      get_organisations: {
+        Args: {
+          accountid: number
+        }
+        Returns: {
+          id: number
+          name: string
+        }[]
       }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
+      account_memberships_result: {
+        account_id: number | null
+        organisation_id: number | null
+      }
       account_team_assignment_result: {
         account_id: number | null
         team_id: number | null

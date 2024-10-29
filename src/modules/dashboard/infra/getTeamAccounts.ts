@@ -1,23 +1,23 @@
 import { supabase } from "@/config/clients";
 
-export const getTeamAccounts = async (teamId: number) => {
+export const getTeamAccounts = async (organisationId: number) => {
   const { data, error } = await supabase
-    .from("teams")
-    .select(`team_assignments ( accounts (id, name, createdAt:created_at))`)
-    .eq("id", teamId)
-    .single();
+    .from("memberships")
+    .select(`accounts (id, name, createdAt:created_at)`)
+    .eq("owner_id", organisationId)
+    .eq("type", "organisation");
 
   if (error) {
     throw new Error("There's been a problem loading your team account");
   }
 
-  return data?.team_assignments
-    .filter((teamAssignment) => teamAssignment?.accounts !== null)
-    .map((teamAssignment) => {
+  return data
+    ?.filter((membership) => membership?.accounts !== null)
+    .map((membership) => {
       return {
-        id: teamAssignment.accounts!.id,
-        name: teamAssignment.accounts!.name,
-        createdAt: teamAssignment.accounts!.createdAt
+        id: membership.accounts!.id,
+        name: membership.accounts!.name,
+        createdAt: membership.accounts!.createdAt
       };
     });
 };

@@ -21,10 +21,10 @@ export interface TeamAccount {
 export interface ProjectsRepository {
   createProject: (
     name: string,
-    teamId: number,
+    organisationId: number,
     clientId?: number,
     description?: string
   ) => Promise<{ project: ProjectCreated; error?: string | null }>;
-  getTeamProjects: (teamId: number) => Promise<DashboardProject[]>;
-  getTeamAccounts: (teamId: number) => Promise<TeamAccount[]>;
+  getTeamProjects: (organisationId: number) => Promise<DashboardProject[]>;
+  getTeamAccounts: (organisationId: number) => Promise<TeamAccount[]>;
 }

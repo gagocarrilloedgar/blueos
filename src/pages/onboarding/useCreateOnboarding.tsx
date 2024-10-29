@@ -9,7 +9,7 @@ const validName = (error: string) =>
 const FormSchema = z.object({
   name: validName("We need your name to create a profile"),
   lastname: validName("We need your last name to create a profile"),
-  team: validName("Workspace name required"),
+  organisation: validName("Workspace name required"),
   teamAccounts: z.array(z.object({ email: z.string().email() })),
   size: z.number().default(1)
 });
@@ -23,7 +23,7 @@ export const useCreateOnboarding = () => {
     defaultValues: {
       name: "",
       lastname: "",
-      team: "",
+      organisation: "",
       teamAccounts: [],
       size: 1
     }
@@ -39,7 +39,7 @@ export const useCreateOnboarding = () => {
   };*/
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    await createAccount(data.name, data.lastname, data.team);
+    await createAccount(data.name, data.lastname, data.organisation);
   }
 
   return {

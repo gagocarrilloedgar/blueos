@@ -1,7 +1,10 @@
 import { SidebarRepository } from "../domain/SidebarRepository";
-import { getSidebarTeams } from "./getSidebarTeams";
+import { getOrganisations } from "./getOrganisations";
 import { getTeamProjects } from "./getTeamProjects";
 
 export const createSupabaseSidebarRepository = (): SidebarRepository => {
-  return { getTeams: getSidebarTeams, getTeamProjects: getTeamProjects };
+  return {
+    getOrganisations,
+    getTeamProjects: getTeamProjects
+  };
 };

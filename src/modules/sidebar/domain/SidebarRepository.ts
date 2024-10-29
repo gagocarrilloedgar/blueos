@@ -1,8 +1,8 @@
-interface CreatedTeam {
+interface CreatedOrganisation {
   id: number;
   name: string;
 }
-export interface Team extends CreatedTeam {
+export interface Organisation extends CreatedOrganisation {
   avatar: string;
   plan: string;
 }
@@ -13,8 +13,8 @@ export interface SidebarProject {
 }
 
 export interface SidebarRepository {
-  getTeams: (accountId: number) => Promise<CreatedTeam[]>;
-  getTeamProjects: (teamId: number) => Promise<SidebarProject[]>;
+  getOrganisations: (accountId: number) => Promise<CreatedOrganisation[]>;
+  getTeamProjects: (organisationId: number) => Promise<SidebarProject[]>;
 }
 
 export const getTeamInitials = (name: string) => {

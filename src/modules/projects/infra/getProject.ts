@@ -2,22 +2,26 @@ import { supabase } from "@/config/clients";
 import { ProjectsRepository } from "../domain/ProjectsRepository";
 
 export const getTeamProjects: ProjectsRepository["getTeamProjects"] = async (
-  teamId
+  organisationId
 ) => {
   const projects = await supabase
     .from("projects")
-    .select("id, name, teamId:team_id, description, clients (id,name)")
-    .eq("team_id", teamId);
+    .select(
+      "id, name, organisationId:organisation_id, description, clients (id,name)"
+    )
+    .eq("organisation_id", organisationId);
 
   if (projects.error) {
     throw new Error("Error while fetching your project");
   }
 
-  return projects.data.map(({ id, name, description, teamId, clients }) => ({
-    id,
-    name,
-    teamId,
-    description,
-    client: clients
-  }));
+  return projects.data.map(
+    ({ id, name, description, organisationId, clients }) => ({
+      id,
+      name,
+      organisationId,
+      description,
+      client: clients
+    })
+  );
 };

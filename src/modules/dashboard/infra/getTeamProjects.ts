@@ -2,12 +2,12 @@ import { supabase } from "@/config/clients";
 import { ProjectsRepository } from "@/modules/dashboard/domain/ProjectsRepository";
 
 export const getTeamProjects: ProjectsRepository["getTeamProjects"] = async (
-  teamId
+  organisationId
 ) => {
   const projects = await supabase
     .from("projects")
     .select("id, name, clients (id,name)")
-    .eq("team_id", teamId)
+    .eq("organisation_id", organisationId)
     .limit(4)
     .order("created_at", { ascending: false });
 

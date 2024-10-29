@@ -2,18 +2,18 @@ import { ProjectsRepository } from "../domain/ProjectsRepository";
 
 export const createProject = (repo: ProjectsRepository) => {
   return async ({
-    teamId,
+    organisationId,
     name,
     description,
     clientId
   }: {
-    teamId: number;
+    organisationId: number;
     name: string;
     description?: string;
     clientId?: number;
   }) => {
     try {
-      await repo.createProject(name, teamId, clientId, description);
+      await repo.createProject(name, organisationId, clientId, description);
       return { error: false };
     } catch (error) {
       console.error(error);

@@ -3,7 +3,7 @@ import { ProjectsRepository } from "../domain/ProjectsRepository";
 
 export const createProject: ProjectsRepository["createProject"] = async (
   name,
-  teamId,
+  organisationId,
   clientId,
   description
 ) => {
@@ -13,7 +13,7 @@ export const createProject: ProjectsRepository["createProject"] = async (
       {
         name,
         description,
-        team_id: teamId,
+        organisation_id: organisationId,
         client_id: clientId
       }
     ])

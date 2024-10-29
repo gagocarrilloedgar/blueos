@@ -10,7 +10,7 @@ export type CreatedTeam = {
 
 export type CreatedTeamAccount = {
   accountId: number;
-  teamId: number;
+  organisationId: number;
 };
 
 export interface OnboardingRepository {
@@ -26,5 +26,5 @@ export interface OnboardingRepository {
     lastName: string,
     userId: string,
     userEmail: string
-  ) => Promise<{ teamId: number; accountId: number } | null>;
+  ) => Promise<{ organisationId: number; accountId: number } | null>;
 }

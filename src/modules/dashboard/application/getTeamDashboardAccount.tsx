@@ -1,9 +1,9 @@
 import { ProjectsRepository } from "@/modules/dashboard/domain/ProjectsRepository";
 
 export const getTeamDashboardAccounts = (repo: ProjectsRepository) => {
-  return async ({ teamId }: { teamId: number }) => {
+  return async ({ organisationId }: { organisationId: number }) => {
     try {
-      const accounts = await repo.getTeamAccounts(teamId);
+      const accounts = await repo.getTeamAccounts(organisationId);
 
       const mappedAccounts = accounts.map((account) => ({
         ...account,

@@ -20,9 +20,9 @@ import { Skeleton } from "../ui/skeleton";
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const { teams, activeTeam, setTeam } = useLayoutContext();
+  const { organisations, activeOrg, setOrganisation } = useLayoutContext();
 
-  if (!activeTeam) return <Skeleton className="size-10 rounded-md w-full" />;
+  if (!activeOrg) return <Skeleton className="size-10 rounded-md w-full" />;
 
   return (
     <SidebarMenu>
@@ -34,13 +34,13 @@ export function TeamSwitcher() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-orange-200 text-sidebar-primary">
-                {activeTeam?.avatar}
+                {activeOrg?.avatar}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam?.name}
+                  {activeOrg?.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam?.plan}</span>
+                <span className="truncate text-xs">{activeOrg?.plan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -54,16 +54,16 @@ export function TeamSwitcher() {
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Teams
             </DropdownMenuLabel>
-            {teams?.map((team, index) => (
+            {organisations?.map((organisation, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setTeam(team)}
+                key={organisation.name}
+                onClick={() => setOrganisation(organisation)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-8 items-center justify-center rounded-md border">
-                  {activeTeam?.avatar}
+                  {organisation?.avatar}
                 </div>
-                {team.name}
+                {organisation.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
@@ -72,7 +72,7 @@ export function TeamSwitcher() {
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">Add organisation</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

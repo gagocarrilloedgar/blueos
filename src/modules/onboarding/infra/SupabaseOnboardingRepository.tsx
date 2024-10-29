@@ -12,23 +12,23 @@ const createTeamWithAccount = async (
   userId: string,
   userEmail: string
 ) => {
-  const { data, error } = await supabase.rpc("create_account_team_assignment", {
+  const { data, error } = await supabase.rpc("create_organisation_membership", {
     account_name: firstName + " " + lastName,
-    team_name: companyName,
+    organisation_name: companyName,
     user_id: userId,
     email: userEmail
   });
 
   if (error) throw new Error("Error creating your team account");
 
-  if (!data?.team_id || !data?.account_id) return null;
+  if (!data?.organisation_id || !data?.account_id) return null;
 
-  return { teamId: data.team_id, accountId: data.account_id };
+  return { organisationId: data.organisation_id, accountId: data.account_id };
 };
 
 const createTeam = async (name: string, size: number) => {
   const { data, error } = await supabase
-    .from("teams")
+    .from("organisations")
     .insert({
       name,
       size

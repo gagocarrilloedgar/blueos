@@ -1,9 +1,9 @@
+import { getSidebarOrganisations } from "@/modules/sidebar/application/getSidebarOrganisations";
 import { getSidebarProjects } from "@/modules/sidebar/application/getSidebarProjects";
-import { getTeams } from "@/modules/sidebar/application/getTeams";
 import {
+  Organisation,
   SidebarProject,
-  SidebarRepository,
-  Team
+  SidebarRepository
 } from "@/modules/sidebar/domain/SidebarRepository";
 import {
   createContext,
@@ -16,15 +16,15 @@ import {
 import { useAuth } from "../auth/AuthProvider";
 
 interface ContextState {
-  teams: Team[];
+  organisations: Organisation[];
   projects: SidebarProject[];
   chats: {
     id: number;
     name: string;
     url: string;
   }[];
-  activeTeam: Team | null;
-  setTeam: (team: Team) => void;
+  activeOrg: Organisation | null;
+  setOrganisation: (team: Organisation) => void;
 }
 
 export const LayoutContext = createContext({} as ContextState);
@@ -33,8 +33,8 @@ export const LayoutProvider = ({
   teamsRepo,
   children
 }: PropsWithChildren<{ teamsRepo: SidebarRepository }>) => {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [activeTeam, setActiveTeam] = useState<Team | null>(null);
+  const [organisations, setOrganisations] = useState<Organisation[]>([]);
+  const [activeOrg, setActiveOrg] = useState<Organisation | null>(null);
   const [projects, setProjects] = useState<SidebarProject[]>([]);
   const { account } = useAuth();
 
@@ -47,8 +47,10 @@ export const LayoutProvider = ({
   >(new Array(1).fill({ id: 1, name: "general", url: "/general" }));
 
   const fetchProjects = useCallback(
-    async (teamId: number) => {
-      const loadedProjects = await getSidebarProjects(teamsRepo)({ teamId });
+    async (organisationId: number) => {
+      const loadedProjects = await getSidebarProjects(teamsRepo)({
+        organisationId
+      });
       if (loadedProjects.projects) {
         setProjects(loadedProjects.projects);
       }
@@ -58,21 +60,21 @@ export const LayoutProvider = ({
 
   const fetchInitialData = useCallback(async () => {
     if (!account) return;
-    const fetchedTeams = await getTeams(teamsRepo)(account.id);
+    const fetchedTeams = await getSidebarOrganisations(teamsRepo)(account.id);
 
-    setTeams(fetchedTeams);
+    setOrganisations(fetchedTeams);
     const currentTeam = fetchedTeams[0];
-    setActiveTeam(currentTeam);
+    setActiveOrg(currentTeam);
 
     if (currentTeam) {
       fetchProjects(currentTeam.id);
     }
   }, [account, teamsRepo, fetchProjects]);
 
-  const setTeam = useCallback(
-    (team: Team) => {
-      setActiveTeam(team);
-      fetchProjects(team.id);
+  const setOrganisation = useCallback(
+    (org: Organisation) => {
+      setActiveOrg(org);
+      fetchProjects(org.id);
     },
     [fetchProjects]
   );
@@ -84,13 +86,13 @@ export const LayoutProvider = ({
 
   const value = useMemo(
     () => ({
-      teams,
-      activeTeam,
+      organisations,
+      setOrganisation,
       chats,
-      setTeam,
+      activeOrg,
       projects
     }),
-    [teams, activeTeam, chats, setTeam, projects]
+    [organisations, setOrganisation, chats, activeOrg, projects]
   );
 
   return (

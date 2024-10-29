@@ -15,7 +15,7 @@ interface ContextState {
   createAccount: (
     firstName: string,
     lastName: string,
-    teamName: string
+    organisationName: string
   ) => Promise<void>;
 }
 export const OnboardingContext = createContext({} as ContextState);
@@ -28,7 +28,7 @@ export const OnboardingProvider = ({
   const navigate = useNavigate();
 
   const createNewAccount = useCallback(
-    async (firstName: string, lastName: string, teamName: string) => {
+    async (firstName: string, lastName: string, organisationName: string) => {
       const user = session?.user;
 
       if (!user?.email) return;
@@ -36,7 +36,7 @@ export const OnboardingProvider = ({
       const res = await createAccount(repo)(
         firstName,
         lastName,
-        teamName,
+        organisationName,
         user.id,
         user.email
       );

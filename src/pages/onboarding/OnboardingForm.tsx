@@ -50,7 +50,7 @@ export function OnboardingForm() {
         />
         <FormField
           control={form.control}
-          name="team"
+          name="organisation"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Workspace name</FormLabel>

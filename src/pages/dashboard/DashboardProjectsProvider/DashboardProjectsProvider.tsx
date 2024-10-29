@@ -25,19 +25,19 @@ export const DashboardProjectsProvider = ({
   const [accounts, setAccounts] = useState<TeamAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { activeTeam } = useLayoutContext();
+  const { activeOrg } = useLayoutContext();
 
   const loadProjects = useCallback(async () => {
-    if (!activeTeam) return;
+    if (!activeOrg) return;
 
     setLoading(true);
 
     try {
       const accountsPromise = getTeamDashboardAccounts(projectsRepo)({
-        teamId: activeTeam.id
+        organisationId: activeOrg.id
       });
       const projectsPromise = getProjects(projectsRepo)({
-        teamId: activeTeam.id
+        organisationId: activeOrg.id
       });
 
       const [projectsData, accountsData] = await Promise.all([
@@ -57,7 +57,7 @@ export const DashboardProjectsProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [activeTeam, projectsRepo]);
+  }, [activeOrg, projectsRepo]);
 
   useEffect(() => {
     loadProjects();
@@ -65,7 +65,7 @@ export const DashboardProjectsProvider = ({
 
   const create = useCallback(
     async (name?: string) => {
-      if (!activeTeam) return;
+      if (!activeOrg) return;
       if (!name) {
         toast.error("Ups, there's been an error", {
           description: "Project name can not be empty"
@@ -75,7 +75,7 @@ export const DashboardProjectsProvider = ({
 
       const resp = await createProject(projectsRepo)({
         name,
-        teamId: activeTeam.id
+        organisationId: activeOrg.id
       });
 
       if (resp.error) {
@@ -90,7 +90,7 @@ export const DashboardProjectsProvider = ({
       // Reload projects after creating a new one
       loadProjects();
     },
-    [activeTeam, projectsRepo, loadProjects]
+    [activeOrg, projectsRepo, loadProjects]
   );
 
   const value = useMemo(

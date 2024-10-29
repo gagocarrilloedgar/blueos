@@ -4,13 +4,13 @@ export const createAccount = (repo: OnboardingRepository) => {
   return async function (
     firstName: string,
     lastName: string,
-    teamName: string,
+    organisationName: string,
     userId: string,
     userEmail: string
   ) {
     try {
       const createTeam = await repo.createTeamWithAccount(
-        teamName,
+        organisationName,
         firstName,
         lastName,
         userId,
