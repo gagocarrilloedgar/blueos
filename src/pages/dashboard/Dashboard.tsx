@@ -17,7 +17,7 @@ import { Trans } from "@lingui/macro";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
-export default function Page() {
+export default function Layout() {
   return (
     <SidebarProvider>
       <AppSidebar />

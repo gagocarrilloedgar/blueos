@@ -1,9 +1,10 @@
-import { SignIn, SignUp, useAuth, useSignUp } from "@clerk/clerk-react";
+import { useAuth, useSignUp } from "@clerk/clerk-react";
 import { useEffect } from "react";
-import { createBrowserRouter, Outlet, useNavigate } from "react-router-dom";
+import { createBrowserRouter, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "./components/ui/sheet";
 import { createSupabaseDashboardProjectsRepository } from "./modules/dashboard/infra/SupabaseProjectsRepository";
 import { createSupabaseOnboardinRepository } from "./modules/onboarding/infra";
+import { Login, SignUp } from "./pages/auth";
 import { DashboardProjectsProvider } from "./pages/dashboard/DashboardProjectsProvider/DashboardProjectsProvider";
 import { Widgets } from "./pages/dashboard/Widgets";
 import { Onboarding } from "./pages/onboarding/Onboarding";
@@ -12,14 +13,6 @@ import RootLayout from "./pages/RootLayout";
 
 const onboardingRepo = createSupabaseOnboardinRepository();
 const projectsRepo = createSupabaseDashboardProjectsRepository();
-
-/*
-<Protected>
-        <LayoutProvider teamsRepo={teamsRepo}>
-          <Page />
-        </LayoutProvider>
-      </Protected>
-      */
 
 export default function DashboardLayout() {
   const { userId, isLoaded } = useAuth();
@@ -47,7 +40,6 @@ export default function DashboardLayout() {
   return (
     <DashboardProjectsProvider projectsRepo={projectsRepo}>
       <Widgets />
-      <Outlet />
     </DashboardProjectsProvider>
   );
 }
@@ -72,20 +64,19 @@ export const router = createBrowserRouter([
         ]
       },
       {
-        path: "/tasks",
-        element: <>Text</>
-      },
-      {
         path: "/login",
-        element: <SignIn signUpUrl="/signup" />
+        element: <Login />
       },
       {
         path: "/signup",
-        element: <SignUp signInUrl="/login" />
+        element: <SignUp />
+      },
+      {
+        path: "/tasks",
+        element: <>Text</>
       }
     ]
   },
-
   {
     path: "/onboarding",
     element: (
