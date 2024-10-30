@@ -1,0 +1,19 @@
+meta {
+  name: Get current user organisation accounts
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/organizations/accounts
+  body: none
+  auth: bearer
+}
+
+headers {
+  : 
+}
+
+auth:bearer {
+  token: eyJhbGciOiJSUzI1NiIsImNhdCI6ImNsX0I3ZDRQRDExMUFBQSIsImtpZCI6Imluc18ybzdRQlpEd0tUSFdNZ3BFZWZ1ZERiTTh3NUsiLCJ0eXAiOiJKV1QifQ.eyJhenAiOiJodHRwOi8vbG9jYWxob3N0OjUxNzMiLCJleHAiOjE3MzAyNDIzNTQsImlhdCI6MTczMDI0MjI5NCwiaXNzIjoiaHR0cHM6Ly93ZWxjb21lLW1hc3RpZmYtNDQuY2xlcmsuYWNjb3VudHMuZGV2IiwibmJmIjoxNzMwMjQyMjg0LCJzaWQiOiJzZXNzXzJvN2NIenJOcm54Z0hCUTdoUU92RW96S2IzeiIsInN1YiI6InVzZXJfMm83Y0kxdmROc3RISVltWmNDYmo0NFZ5eHM4In0.rJiS35Ha1xtVFtSSu8hTgJ6bxnCt6kxdJMbPsLxpSp1X4XHpNKzxnoq0Gwu2-Wj71Zuip4pzO9D_JtHGRsIfzMJb9ypL5OWldY6Zmp0oU_bHf4VxpQqreoVFg953EFKiEYyinNKKk1HI8scr9UziuTtkpOleB0pHr_xpAKyusixGvnhb-jzS4RzHvahdnWot-BDGsRmXMBJKKDeg2_bBDfLnYxO5oNEOF4SaED8ue4HBnM4ueLZqAKrPmpMmu1pm3CadbA3ic7JEDghnvzmYfUNxmARwolo3jpgFysUfPhDwjLcoC1pUDe0-S8hHu2_ioj19N2cUD5HFkoqSTbYoFw
+}

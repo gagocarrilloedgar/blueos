@@ -1,0 +1,22 @@
+meta {
+  name: Login clerk
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://api.clerk.com/v1/sign_in_tokens
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: sk_test_3x7KGLG5eiMRjgDOeLlwpHfSTBgcR35vNBGLRLm7EV
+}
+
+body:json {
+  {
+  "user_id": "user_2o7z7r0URLKWF8m9nLERacpoPVP",
+  "expires_in_seconds": 2592000
+  }
+}
