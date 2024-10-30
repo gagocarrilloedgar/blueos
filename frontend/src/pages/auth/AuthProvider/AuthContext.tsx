@@ -1,6 +1,11 @@
-import { Account } from "@/modules/auth/domain/AuthRepository";
 import { createContext } from "react";
 
+export interface Account {
+  id: number;
+  name: string;
+  initials: string;
+  email: string;
+}
 interface AuthContextState {
   account: Account | null;
   loading: boolean;

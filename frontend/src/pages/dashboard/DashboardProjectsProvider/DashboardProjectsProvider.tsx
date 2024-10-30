@@ -1,11 +1,3 @@
-import { createProject } from "@/modules/dashboard/application/createProject";
-import { getProjects } from "@/modules/dashboard/application/getProjects";
-import { getTeamDashboardAccounts } from "@/modules/dashboard/application/getTeamDashboardAccount";
-import {
-  DashboardProject,
-  ProjectsRepository,
-  TeamAccount
-} from "@/modules/dashboard/domain/ProjectsRepository";
 import {
   PropsWithChildren,
   useCallback,
@@ -17,10 +9,17 @@ import { toast } from "sonner";
 import { useLayoutContext } from "../useLayoutContext";
 import { Context } from "./Context";
 
-export const DashboardProjectsProvider = ({
-  projectsRepo,
-  children
-}: PropsWithChildren<{ projectsRepo: ProjectsRepository }>) => {
+export interface DashboardProject {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+interface TeamAccount {
+  id: string;
+}
+
+export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
   const [accounts, setAccounts] = useState<TeamAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,11 +32,15 @@ export const DashboardProjectsProvider = ({
     setLoading(true);
 
     try {
-      const accountsPromise = getTeamDashboardAccounts(projectsRepo)({
-        organisationId: activeOrg.id
-      });
-      const projectsPromise = getProjects(projectsRepo)({
-        organisationId: activeOrg.id
+      const accountsPromise = fetch(
+        "http://localhost:3000/api/v1/organizations/accounts",
+        {
+          credentials: "include"
+        }
+      );
+
+      const projectsPromise = fetch("http://localhost:3000/api/v1/projects", {
+        credentials: "include"
       });
 
       const [projectsData, accountsData] = await Promise.all([
@@ -45,19 +48,24 @@ export const DashboardProjectsProvider = ({
         accountsPromise
       ]);
 
-      if (projectsData.error || accountsData.error) {
+      const [projectsJson, accountsJson] = await Promise.all([
+        projectsData.json(),
+        accountsData.json()
+      ]);
+
+      if (projectsJson.errors || accountsJson.errors) {
         throw new Error("Failed to dashboard data");
       }
 
-      setProjects(projectsData?.projects ?? []);
-      setAccounts(accountsData.accounts);
+      setProjects(projectsJson ?? []);
+      setAccounts(accountsJson);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load projects.");
     } finally {
       setLoading(false);
     }
-  }, [activeOrg, projectsRepo]);
+  }, [activeOrg]);
 
   useEffect(() => {
     loadProjects();
@@ -73,9 +81,8 @@ export const DashboardProjectsProvider = ({
         return;
       }
 
-      const resp = await createProject(projectsRepo)({
-        name,
-        organisationId: activeOrg.id
+      const resp = await Promise.resolve({
+        error: null
       });
 
       if (resp.error) {
@@ -90,7 +97,7 @@ export const DashboardProjectsProvider = ({
       // Reload projects after creating a new one
       loadProjects();
     },
-    [activeOrg, projectsRepo, loadProjects]
+    [activeOrg, loadProjects]
   );
 
   const value = useMemo(
