@@ -5,54 +5,44 @@ import { db } from "../db";
 import { accountsTable } from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
-    fastify.route({
-        method: "GET",
-        url: "/users",
-        handler: async (_request, reply) => {
-            const users = await db.select().from(accountsTable);
-            return reply.send(users);
-        },
-    });
+  // Get current account
+  fastify.route({
+    method: "GET",
+    url: "/accounts/session",
+    handler: async (request, reply) => {
+      const { accountId } = request;
+      const account = await db
+        .select()
+        .from(accountsTable)
+        .where(eq(accountsTable.id, accountId));
+      return reply.send(account[0]);
+    }
+  });
 
-    // Get current account
-    fastify.route({
-        method: "GET",
-        url: "/accounts/session",
-        handler: async (request, reply) => {
-            const { accountId } = request;
-            const account = await db.select().from(accountsTable).where(
-                eq(accountsTable.id, accountId),
-            );
-            return reply.send(account[0]);
-        },
-    });
+  const createAccountSchema = z.object({
+    name: z.string()
+  });
 
-    const createAccountSchema = z.object({
-        name: z.string(),
-    });
+  fastify.route({
+    method: "POST",
+    url: "/users",
+    schema: {
+      body: createAccountSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Body: z.infer<typeof createAccountSchema> }>,
+      reply
+    ) => {
+      const { name } = request.body;
+      const { userId, email } = request;
 
-    fastify.route({
-        method: "POST",
-        url: "/users",
-        schema: {
-            body: createAccountSchema,
-        },
-        handler: async (
-            request: FastifyRequest<
-                { Body: z.infer<typeof createAccountSchema> }
-            >,
-            reply,
-        ) => {
-            const { name } = request.body;
-            const { userId, email } = request;
+      const user = await db.insert(accountsTable).values({
+        email,
+        userId,
+        name
+      });
 
-            const user = await db.insert(accountsTable).values({
-                email,
-                userId,
-                name,
-            });
-
-            return reply.send(user);
-        },
-    });
+      return reply.send(user);
+    }
+  });
 };

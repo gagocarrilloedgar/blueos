@@ -18,6 +18,7 @@
     "@clerk/fastify": "^2.0.5",
     "@fastify/autoload": "^6.0.2",
     "@fastify/cors": "^10.0.1",
+    "@trpc/server": "^10.45.2",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.35.3",
     "fastify": "^5.0.0",

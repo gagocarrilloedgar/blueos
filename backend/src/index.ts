@@ -6,7 +6,7 @@ import cors from "@fastify/cors";
 import Fastify from "fastify";
 import {
   serializerCompiler,
-  validatorCompiler,
+  validatorCompiler
 } from "fastify-type-provider-zod";
 
 import path from "path";
@@ -16,7 +16,7 @@ const fastify = Fastify({ logger: true });
 
 fastify.register(cors, {
   origin: ["http://localhost:5173"],
-  credentials: true,
+  credentials: true
 });
 
 // Add schema validator and serializer
@@ -26,7 +26,8 @@ fastify.setSerializerCompiler(serializerCompiler);
 fastify.register(authorise);
 
 fastify.register(AutoLoad, {
-  dir: path.join(__dirname, "./routes"),
+  dir: path.join(__dirname, "routes"),
+  options: { prefix: "/api/v1" }
 });
 
 // Start the server
