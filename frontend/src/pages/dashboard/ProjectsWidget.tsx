@@ -30,6 +30,7 @@ import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { ArrowUpRight, Edit, Trash } from "lucide-react";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
 
 export const ProjectsWidget = () => {
@@ -138,6 +139,7 @@ export const ProjectsWidget = () => {
 
 const ProjectEditMenu = ({ name, id }: { name: string; id: number }) => {
   const { deleteProject } = useDashboardProjects();
+  const navigate = useNavigate();
 
   const onDelete = async () => await deleteProject(id);
 
@@ -155,7 +157,7 @@ const ProjectEditMenu = ({ name, id }: { name: string; id: number }) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/edit-project/${id}`)}>
           <Edit className="mr-2 w-4 h-4" />
           <Trans>Edit</Trans>
         </DropdownMenuItem>

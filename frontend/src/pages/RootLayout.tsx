@@ -1,3 +1,4 @@
+import { Loader } from "@/components/ui/loader";
 import { ClerkProvider, useAuth, useSignUp } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -81,7 +82,7 @@ const AuthLoader = ({ children }: { children: React.ReactNode }) => {
   if (!isLoaded) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
-        <span className="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-sky-400 opacity-75"></span>
+        <Loader />
       </div>
     );
   }

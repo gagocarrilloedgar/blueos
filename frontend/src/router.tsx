@@ -1,6 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Sheet, SheetContent } from "./components/ui/sheet";
+import {
+  Sheet,
+  SheetContent
+} from "./components/ui/sheet";
 import { Login, SignUp } from "./pages/auth";
+import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
@@ -22,6 +26,10 @@ export const router = createBrowserRouter([
                 <SheetContent>text</SheetContent>
               </Sheet>
             )
+          },
+          {
+            path: "/edit-project/:projectId",
+            element: <EditProject />
           }
         ]
       },
