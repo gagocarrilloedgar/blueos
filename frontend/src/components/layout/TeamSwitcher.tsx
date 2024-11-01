@@ -13,20 +13,21 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
   useSidebar
 } from "@/components/ui/sidebar";
 import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
 import { Skeleton } from "../ui/skeleton";
 
 export function TeamSwitcher() {
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
   const { organisations, activeOrg, setOrganisation } = useLayoutContext();
 
   if (!activeOrg) return <Skeleton className="size-10 rounded-md w-full" />;
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem>
+      <SidebarMenuItem className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
@@ -72,10 +73,13 @@ export function TeamSwitcher() {
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add organisation</div>
+              <div className="font-medium text-muted-foreground">
+                Add organisation
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {open && <SidebarTrigger className="hidden ml-1 md:block" />}
       </SidebarMenuItem>
     </SidebarMenu>
   );
