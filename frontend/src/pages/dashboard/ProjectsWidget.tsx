@@ -11,15 +11,24 @@ import { Separator } from "@/components/ui/separator";
 import { Trans } from "@lingui/macro";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+import { getInitials } from "@/lib/getInitials";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
-import { getTeamInitials } from "@/modules/sidebar/domain/SidebarRepository";
-import { ArrowUpRight, ChevronRight, Edit } from "lucide-react";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { ArrowUpRight, Edit, Trash } from "lucide-react";
 import { useRef } from "react";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
 
@@ -78,7 +87,7 @@ export const ProjectsWidget = () => {
           </section>
         )}
         <section className="flex flex-col pb-4 gap-2">
-          {projects?.map(({ name }, index) => {
+          {projects?.map(({ id, name }, index) => {
             return (
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
@@ -86,7 +95,7 @@ export const ProjectsWidget = () => {
                     <AvatarFallback
                       className={`uppercase ${getRandomPastelColor()}`}
                     >
-                      {getTeamInitials(name)}
+                      {getInitials(name)}
                     </AvatarFallback>
                   </Avatar>
                   <p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
@@ -96,18 +105,10 @@ export const ProjectsWidget = () => {
                     <Tooltip>
                       <TooltipTrigger>
                         <Button type="button" size="icon" variant="ghost">
-                          <Edit className="w-4 h-4" />
+                          <ProjectEditMenu name={name} id={id} />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Edit</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button type="button" size="icon" variant="ghost">
-                          <ChevronRight className="w-4 h-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Open</TooltipContent>
+                      <TooltipContent>Project options</TooltipContent>
                     </Tooltip>
                   </span>
                 </div>
@@ -132,5 +133,37 @@ export const ProjectsWidget = () => {
         </form>
       </CardContent>
     </Card>
+  );
+};
+
+const ProjectEditMenu = ({ name, id }: { name: string; id: number }) => {
+  const { deleteProject } = useDashboardProjects();
+
+  const onDelete = async () => await deleteProject(id);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Button type="button" size="icon" variant="ghost">
+          <DotsVerticalIcon className="w-4 h-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel className="p-0 font-normal">
+          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+            <p className="text-sm font-semibold">{name}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Edit className="mr-2 w-4 h-4" />
+          <Trans>Edit</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={onDelete}>
+          <Trash className="mr-2 w-4 h-4" />
+          <Trans>Delete</Trans>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

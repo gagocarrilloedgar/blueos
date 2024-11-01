@@ -5,7 +5,7 @@ export function Login() {
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <div className="z-10">
-        <SignIn signUpUrl="/signup" path="/login" />
+        <SignIn signUpUrl="/signup" />
       </div>
       <DotBackground />
     </div>

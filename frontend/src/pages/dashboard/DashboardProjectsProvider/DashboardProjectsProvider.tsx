@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   PropsWithChildren,
   useCallback,
@@ -10,19 +11,21 @@ import { useLayoutContext } from "../useLayoutContext";
 import { Context } from "./Context";
 
 export interface DashboardProject {
-  id: string;
+  id: number;
   name: string;
   createdAt: string;
 }
 
-interface TeamAccount {
-  id: string;
+export interface TeamAccount {
+  id: number;
+  name: string;
+  createdAt: string;
 }
 
 export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
   const [accounts, setAccounts] = useState<TeamAccount[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { activeOrg } = useLayoutContext();
 
@@ -33,7 +36,7 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
 
     try {
       const accountsPromise = fetch(
-        "http://localhost:3000/api/v1/organizations/accounts",
+        `http://localhost:3000/api/v1/organizations/accounts/${activeOrg.id}`,
         {
           credentials: "include"
         }
@@ -81,11 +84,16 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
         return;
       }
 
-      const resp = await Promise.resolve({
-        error: null
+      const resp = await fetch("http://localhost:3000/api/v1/projects", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, organisationId: activeOrg.id })
       });
 
-      if (resp.error) {
+      if (!resp.ok) {
         toast.error("Ups, there's been an error", {
           description:
             "There's been an error creating the project. Please try again later"
@@ -94,10 +102,45 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
       }
 
       toast.success("Project created successfully");
-      // Reload projects after creating a new one
+
       loadProjects();
     },
     [activeOrg, loadProjects]
+  );
+
+  const confirmDelete = useCallback(async (projectId: number) => {
+    const resp = fetch(`http://localhost:3000/api/v1/projects/${projectId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    toast.promise(resp, {
+      loading: "Deleting project...",
+      success: () => {
+        loadProjects();
+        return "Project deleted successfully";
+      },
+      error: "Failed to delete project"
+    });
+  }, []);
+
+  const deleteProject = useCallback(
+    async (projectId: number) => {
+      toast("Delete project", {
+        closeButton: true,
+        description: "This action will delete the project and all its data.",
+        action: (
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => confirmDelete(projectId)}
+          >
+            Delete
+          </Button>
+        )
+      });
+    },
+    [loadProjects]
   );
 
   const value = useMemo(
@@ -105,9 +148,10 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
       projects,
       accounts,
       createProject: create,
+      deleteProject,
       loading: loading && !projects.length
     }),
-    [projects, loading, create, accounts]
+    [projects, loading, create, accounts, deleteProject]
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

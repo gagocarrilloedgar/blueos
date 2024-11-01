@@ -17,8 +17,8 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+import { getInitials } from "@/lib/getInitials";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
-import { getTeamInitials } from "@/modules/sidebar/domain/SidebarRepository";
 import { ArrowUpRight, Trash } from "lucide-react";
 import { useRef } from "react";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
@@ -86,7 +86,7 @@ export const AccountsWidget = () => {
                     <AvatarFallback
                       className={`uppercase ${getRandomPastelColor()}`}
                     >
-                      {getTeamInitials(name)}
+                      {getInitials(name)}
                     </AvatarFallback>
                   </Avatar>
                   <div>

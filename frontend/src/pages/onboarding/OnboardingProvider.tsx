@@ -1,5 +1,4 @@
-import { createAccount } from "@/modules/onboarding/application";
-import { OnboardingRepository } from "@/modules/onboarding/domain/OnboardingRepository";
+import { useUser } from "@clerk/clerk-react";
 import {
   createContext,
   PropsWithChildren,
@@ -9,7 +8,6 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "../auth/AuthProvider";
 
 interface ContextState {
   createAccount: (
@@ -20,26 +18,23 @@ interface ContextState {
 }
 export const OnboardingContext = createContext({} as ContextState);
 
-export const OnboardingProvider = ({
-  children,
-  repo
-}: PropsWithChildren<{ repo: OnboardingRepository }>) => {
-  const { session } = useAuth();
+export const OnboardingProvider = ({ children }: PropsWithChildren) => {
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const createNewAccount = useCallback(
     async (firstName: string, lastName: string, organisationName: string) => {
-      const user = session?.user;
+      const email = user?.emailAddresses[0].emailAddress;
+      const userId = user?.id;
+      if (!email || !userId) return;
 
-      if (!user?.email) return;
-
-      const res = await createAccount(repo)(
+      const res = await Promise.resolve({
         firstName,
         lastName,
         organisationName,
-        user.id,
-        user.email
-      );
+        userId,
+        email
+      });
 
       if (!res) {
         toast.error("Ups, something went wrong", {
@@ -53,7 +48,7 @@ export const OnboardingProvider = ({
       });
       navigate("/");
     },
-    [repo, session, navigate]
+    [navigate]
   );
 
   const value = useMemo(
