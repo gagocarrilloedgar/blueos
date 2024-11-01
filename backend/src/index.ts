@@ -6,22 +6,22 @@ import cors from "@fastify/cors";
 import Fastify from "fastify";
 import {
   serializerCompiler,
-  validatorCompiler
+  validatorCompiler,
+  ZodTypeProvider
 } from "fastify-type-provider-zod";
 
 import path from "path";
 import authorise from "./plugins/authorise";
 
-const fastify = Fastify({ logger: true });
+const fastify = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
+
+fastify.setValidatorCompiler(validatorCompiler);
+fastify.setSerializerCompiler(serializerCompiler);
 
 fastify.register(cors, {
   origin: ["http://localhost:5173"],
   credentials: true
 });
-
-// Add schema validator and serializer
-fastify.setValidatorCompiler(validatorCompiler);
-fastify.setSerializerCompiler(serializerCompiler);
 
 fastify.register(authorise);
 

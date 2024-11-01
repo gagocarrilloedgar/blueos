@@ -9,7 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:reset": "docker compose down -v && docker compose up -d",
-    "db:seed": "pnpm tsx src/db/seed.ts"
+    "db:seed": "pnpm db:migrate && pnpm tsx src/db/seed.ts"
   },
   "keywords": [],
   "author": "",
