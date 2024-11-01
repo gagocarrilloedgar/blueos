@@ -22,6 +22,39 @@ const projecRoutes = (fastify: FastifyInstance) => {
     }
   });
 
+  // Get necessary project details for edit
+  const projectsEditSchema = z.object({
+    projectId: z.string().transform((val) => parseInt(val, 10))
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/projects/:projectId",
+    schema: {
+      params: projectsEditSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Params: z.infer<typeof projectsEditSchema> }>,
+      reply
+    ) => {
+      const project = await db.query.projectsTable.findFirst({
+        columns: {
+          clientId: false
+        },
+        with: {
+          client: true
+        },
+        where: (project) =>
+          and(
+            eq(project.id, request.params.projectId),
+            eq(project.organisationId, request.organisationId)
+          )
+      });
+
+      return reply.send(project);
+    }
+  });
+
   const createProjectSchema = z.object({
     name: z.string(),
     organisationId: z.number()
