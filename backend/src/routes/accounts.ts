@@ -2,7 +2,11 @@ import { eq } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { db } from "../db";
-import { accountsTable } from "../db/schema/main";
+import {
+  accountsTable,
+  membershipsTable,
+  organisationsTable
+} from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
   // Get current account
@@ -20,12 +24,13 @@ export default async (fastify: FastifyInstance) => {
   });
 
   const createAccountSchema = z.object({
-    name: z.string()
+    name: z.string(),
+    organisationName: z.string()
   });
 
   fastify.route({
     method: "POST",
-    url: "/users",
+    url: "/accounts-onboarding",
     schema: {
       body: createAccountSchema
     },
@@ -33,16 +38,34 @@ export default async (fastify: FastifyInstance) => {
       request: FastifyRequest<{ Body: z.infer<typeof createAccountSchema> }>,
       reply
     ) => {
-      const { name } = request.body;
+      const { name, organisationName } = request.body;
       const { userId, email } = request;
 
-      const user = await db.insert(accountsTable).values({
-        email,
-        userId,
-        name
+      await db.transaction(async (tx) => {
+        const account = await tx
+          .insert(accountsTable)
+          .values({
+            email,
+            userId,
+            name
+          })
+          .returning({ id: accountsTable.id });
+
+        const org = await tx
+          .insert(organisationsTable)
+          .values({
+            name: organisationName
+          })
+          .returning({ id: organisationsTable.id });
+
+        await tx.insert(membershipsTable).values({
+          accountId: account[0].id,
+          ownerId: org[0].id,
+          ownerType: "organisation"
+        });
       });
 
-      return reply.send(user);
+      return reply.status(200).send({ message: "Account created" });
     }
   });
 };

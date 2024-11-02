@@ -9,6 +9,9 @@ import {
   organisationsTable
 } from "../db/schema/main";
 
+const routePrefix = "/api/v1";
+const skipAccountValidationRoutes = ["/accounts-onboarding"];
+
 const authorise = (fastify: FastifyInstance) => {
   fastify.register(clerkPlugin);
 
@@ -24,6 +27,14 @@ const authorise = (fastify: FastifyInstance) => {
     if (user.banned) {
       return reply.status(401).send({ error: "Unauthorized" });
     }
+
+    request.userId = userId;
+    request.email = user.emailAddresses[0].emailAddress;
+
+    if (
+      skipAccountValidationRoutes.includes(request.url.replace(routePrefix, ""))
+    )
+      return;
 
     const organisationInfo = await db
       .select({
@@ -48,8 +59,6 @@ const authorise = (fastify: FastifyInstance) => {
       return reply.status(401).send({ error: "Unauthorized" });
     }
 
-    request.userId = userId;
-    request.email = user.emailAddresses[0].emailAddress;
     request.accountId = organisation.accountId;
     request.organisationId = organisation.organisationId;
   });
