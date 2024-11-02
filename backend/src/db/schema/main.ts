@@ -1,10 +1,11 @@
 import { relations, sql } from "drizzle-orm";
 import {
-    integer,
-    pgEnum,
-    pgTable,
-    timestamp,
-    varchar
+  integer,
+  pgEnum,
+  pgTable,
+  real,
+  timestamp,
+  varchar
 } from "drizzle-orm/pg-core";
 
 export const ownerTypeEnum = pgEnum("owner", ["organisation", "portal"]);
@@ -102,7 +103,16 @@ export const projectsTable = pgTable("projects", {
   organisationId: integer().references(() => organisationsTable.id),
   clientId: integer().references(() => clientsTable.id),
   name: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp({ precision: 6, withTimezone: true }).default(sql`now()`)
+  description: varchar({ length: 255 }),
+  workedHours: real("worked_hours"),
+  createdAt: timestamp("created_at", {
+    precision: 6,
+    withTimezone: true
+  }).default(sql`now()`),
+  updatedAt: timestamp("updated_at", {
+    precision: 6,
+    withTimezone: true
+  })
 });
 
 export const projectsRelations = relations(projectsTable, ({ one }) => ({
