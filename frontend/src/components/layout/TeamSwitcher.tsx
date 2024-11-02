@@ -17,7 +17,9 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
+import { Trans } from "@lingui/macro";
 import { Skeleton } from "../ui/skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function TeamSwitcher() {
   const { isMobile, open } = useSidebar();
@@ -69,14 +71,21 @@ export function TeamSwitcher() {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">
-                Add organisation
-              </div>
-            </DropdownMenuItem>
+            <Tooltip>
+              <TooltipTrigger>
+                <DropdownMenuItem disabled className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                    <Plus className="size-4" />
+                  </div>
+                  <div className="font-medium text-muted-foreground">
+                    Add organisation
+                  </div>
+                </DropdownMenuItem>
+              </TooltipTrigger>
+              <TooltipContent>
+                <Trans id="coming-soon">Coming soon</Trans>
+              </TooltipContent>
+            </Tooltip>
           </DropdownMenuContent>
         </DropdownMenu>
         {open && <SidebarTrigger className="hidden ml-1 md:block" />}

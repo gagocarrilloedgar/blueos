@@ -226,8 +226,13 @@ const EditProjectForm = () => {
         />
       </div>
       <SheetFooter className="sticky bottom-4">
+        {showCreateClient && (
+          <Button onClick={() => setShowCreateClient(false)} variant="outline">
+            Cancel
+          </Button>
+        )}
         <Button
-          disabled={isPending || !isDirty}
+          disabled={isPending || (!isDirty && !showCreateClient)}
           form={showCreateClient ? "create-client-form" : "edit-project-form"}
           type="submit"
         >

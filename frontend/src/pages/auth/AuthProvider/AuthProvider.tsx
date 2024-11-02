@@ -8,12 +8,14 @@ import {
 } from "react";
 
 import { getInitials } from "@/lib/getInitials";
+import { useClerk } from "@clerk/clerk-react";
 import { Account, AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [account, setAccount] = useState<Account | null>(null);
   const [token] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const { signOut } = useClerk();
 
   const initSession = useCallback(async () => {
     const newAccount = await fetch(
@@ -40,13 +42,18 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     initSession().finally(() => setLoading(false));
   }, []);
 
+  const logout = useCallback(async () => {
+    await signOut();
+  }, []);
+
   const value = useMemo(
     () => ({
       account,
       loading,
-      token
+      token,
+      logout
     }),
-    [token, account, loading]
+    [token, account, loading, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

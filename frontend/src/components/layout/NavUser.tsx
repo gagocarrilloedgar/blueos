@@ -27,7 +27,7 @@ import { ModeToggle } from "../ModeToggle";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { account } = useAuth();
+  const { account, logout } = useAuth();
 
   return (
     account && (
@@ -98,7 +98,7 @@ export function NavUser() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>
                 <LogOut className="mr-2 w-4 h-4" />
                 Log out
               </DropdownMenuItem>

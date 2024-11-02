@@ -3,6 +3,7 @@ import { ClerkProvider, useAuth, useSignUp } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthProvider";
+import { useAuth as useAccountAuth } from "./auth/AuthProvider/useAuth";
 import Layout from "./dashboard/Dashboard";
 import { LayoutProvider } from "./dashboard/LayoutProvider";
 
@@ -37,7 +38,9 @@ export default function RootLayout() {
 const useIsAuthScreen = () => {
   const { pathname } = useLocation();
 
-  return pathname.includes("login") || pathname.includes("signup");
+  const noLayoutScreens = ["login", "signup", "onboarding"];
+
+  return noLayoutScreens.some((screen) => pathname.includes(screen));
 };
 
 const LayoutWithoutAuth = () => {
@@ -54,6 +57,7 @@ const LayoutWithoutAuth = () => {
 
 const AuthLoader = ({ children }: { children: React.ReactNode }) => {
   const { userId, isLoaded } = useAuth();
+  const { account, loading } = useAccountAuth();
   const navigate = useNavigate();
   const { signUp } = useSignUp();
 
@@ -66,6 +70,8 @@ const AuthLoader = ({ children }: { children: React.ReactNode }) => {
   }, [isLoaded, userId, signUp?.status, navigate]);
 
   useEffect(() => {
+    if (isLoaded && !account && !loading) navigate("/onboarding");
+
     if (isLoaded && status === "missing_requirements") {
       navigate("/signup#/verify-email-address");
     }
@@ -77,7 +83,7 @@ const AuthLoader = ({ children }: { children: React.ReactNode }) => {
     if (isLoaded && !userId) {
       navigate("/login");
     }
-  }, [isLoaded, userId]);
+  }, [isLoaded, userId, account?.id, loading]);
 
   if (!isLoaded) {
     return (

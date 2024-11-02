@@ -10,6 +10,7 @@ interface AuthContextState {
   account: Account | null;
   loading: boolean;
   token: string | null;
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextState);

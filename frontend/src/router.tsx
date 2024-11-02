@@ -1,8 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import {
-  Sheet,
-  SheetContent
-} from "./components/ui/sheet";
+import { Sheet, SheetContent } from "./components/ui/sheet";
 import { Login, SignUp } from "./pages/auth";
 import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
@@ -44,15 +41,15 @@ export const router = createBrowserRouter([
       {
         path: "/signup*",
         element: <SignUp />
+      },
+      {
+        path: "/onboarding",
+        element: (
+          <OnboardingProvider>
+            <Onboarding />
+          </OnboardingProvider>
+        )
       }
     ]
-  },
-  {
-    path: "onboarding",
-    element: (
-      <OnboardingProvider>
-        <Onboarding />
-      </OnboardingProvider>
-    )
   }
 ]);

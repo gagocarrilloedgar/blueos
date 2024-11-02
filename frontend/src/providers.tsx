@@ -27,7 +27,12 @@ export const Providers = () => {
           <TooltipProvider>
             <ThemeProvider defaultTheme="light" storageKey="blue-ui-theme">
               <RouterProvider router={router} />
-              <Toaster richColors theme="light" />
+              <Toaster
+                richColors
+                theme="light"
+                position="bottom-center"
+                duration={1500}
+              />
             </ThemeProvider>
           </TooltipProvider>
         </QueryClientProvider>
