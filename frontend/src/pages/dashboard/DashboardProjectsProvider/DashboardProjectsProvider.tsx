@@ -116,8 +116,8 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
 
     toast.promise(resp, {
       loading: "Deleting project...",
-      success: () => {
-        loadProjects();
+      success: async () => {
+        await loadProjects();
         return "Project deleted successfully";
       },
       error: "Failed to delete project"
