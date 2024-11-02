@@ -7,9 +7,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { SidebarProject } from "@/modules/sidebar/domain/SidebarRepository";
+import { SidebarProject } from "@/pages/dashboard/LayoutContext";
 import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function NavProjects() {
   const { projects } = useLayoutContext();
@@ -24,6 +24,7 @@ export function NavProjects() {
 
 const ProjectsSection = ({ projects }: { projects: SidebarProject[] }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const showAll = projects?.length > 5;
 
@@ -38,10 +39,11 @@ const ProjectsSection = ({ projects }: { projects: SidebarProject[] }) => {
           <SidebarMenuButton
             key={fullUrl}
             isActive={fullUrl === pathname}
+            onClick={() => navigate(fullUrl)}
             tooltip={name}
           >
             <HashIcon className="h-4 w-4" />
-            <a href={fullUrl}>{name}</a>
+            {name}
           </SidebarMenuButton>
         );
       })}

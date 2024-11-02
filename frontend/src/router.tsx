@@ -5,6 +5,7 @@ import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
+import ProjectsList from "./pages/projects/ProjectsList/ProjectsList";
 import RootLayout from "./pages/RootLayout";
 
 export const router = createBrowserRouter([
@@ -31,8 +32,8 @@ export const router = createBrowserRouter([
         ]
       },
       {
-        path: "/tasks",
-        element: <>Text</>
+        path: "/projects",
+        element: <ProjectsList />
       },
       {
         path: "/login*",

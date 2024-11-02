@@ -4,7 +4,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
@@ -15,7 +14,7 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { Trans } from "@lingui/macro";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function Layout() {
@@ -53,8 +52,12 @@ const SidebarHeader = () => {
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
   const { account } = useAuth();
+  const navigate = useNavigate();
+
   const isMorning = new Date().getHours() <= 12;
   const title = isMorning ? "Morning" : "Hello" + " " + account?.name;
+  const breadcrumbs = generateBreadcrumbs(pathname);
+
   if (pathname === "/" && account)
     return (
       <div className="flex items-center gap-2">
@@ -72,14 +75,38 @@ const Breadcrumbs = () => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href="#">Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator className="hidden md:block" />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-        </BreadcrumbItem>
+        {breadcrumbs.map((breadcrumb, index) => (
+          <span key={breadcrumb.href}>
+            <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbLink
+                onClick={() => {
+                  navigate(breadcrumb.href);
+                }}
+                className="capitalize"
+              >
+                {breadcrumb.label}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {index !== breadcrumbs.length - 1 && (
+              <BreadcrumbSeparator className="hidden md:block" />
+            )}
+          </span>
+        ))}
       </BreadcrumbList>
     </Breadcrumb>
   );
+};
+
+const generateBreadcrumbs = (pathname: string) => {
+  const paths = pathname.split("/").filter(Boolean);
+
+  const breadcrumbs = paths.map((path, index) => {
+    const href = paths.slice(0, index + 1).join("/");
+    return {
+      href,
+      label: path
+    };
+  });
+
+  return breadcrumbs;
 };

@@ -24,7 +24,7 @@ import {
   SidebarMenuButton,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { NavProjects } from "./NavProjects";
 
 // This is sample data.
@@ -102,19 +102,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 const OverviewNav = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <SidebarGroup>
       <SidebarMenuButton
         isActive={pathname === "/notifications"}
+        onClick={() => navigate("/notifications")}
         tooltip="notifications"
       >
         <Bell />
-        <a href="/notifications">Notifications</a>
+        Notifications
       </SidebarMenuButton>
-      <SidebarMenuButton isActive={pathname === "/"} tooltip="overview">
+      <SidebarMenuButton
+        isActive={pathname === "/"}
+        onClick={() => navigate("/")}
+        tooltip="overview"
+      >
         <LayoutDashboard />
-        <a href="/notifications">Overview</a>
+        Overview
       </SidebarMenuButton>
     </SidebarGroup>
   );

@@ -35,6 +35,7 @@ import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardPr
 
 export const ProjectsWidget = () => {
   const { projects, loading, createProject } = useDashboardProjects();
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const title = "Projects";
@@ -62,10 +63,12 @@ export const ProjectsWidget = () => {
         </span>
         <Tooltip>
           <TooltipTrigger className="ml-auto">
-            <Button size="icon" variant="ghost" asChild>
-              <a href="/projects">
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => navigate("/projects")}
+            >
+              <ArrowUpRight className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>See all projects</TooltipContent>
