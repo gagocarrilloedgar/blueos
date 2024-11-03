@@ -1,24 +1,113 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, like } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { db } from "../db";
 import { clientsTable, projectsTable } from "../db/schema/main";
 
 const projecRoutes = (fastify: FastifyInstance) => {
+  const projectsOverviewSchema = z.object({
+    page: z.coerce.number(),
+    limit: z.coerce.number().default(15),
+    search: z.string().optional().nullable()
+  });
+
   fastify.route({
     method: "GET",
-    url: "/projects",
-    handler: async (request, reply) => {
-      const projects = await db.query.projectsTable.findMany({
+    url: "/projects/overview",
+    schema: {
+      querystring: projectsOverviewSchema
+    },
+    handler: async (
+      request: FastifyRequest<{
+        Querystring: z.infer<typeof projectsOverviewSchema>;
+      }>,
+      reply
+    ) => {
+      const { page, limit, search } = request.query;
+      const countsQuery = db
+        .select({ count: count() })
+        .from(projectsTable)
+        .where(eq(projectsTable.organisationId, request.organisationId));
+
+      const projectQuery = db.query.projectsTable.findMany({
+        limit: limit,
+        offset: page * limit,
         columns: {
           id: true,
           name: true,
+          description: true,
+          workedHours: true,
           createdAt: true
         },
-        where: (project) => eq(project.organisationId, request.organisationId)
+        with: {
+          client: {
+            columns: {
+              id: true,
+              name: true
+            }
+          }
+        },
+        where: (project) => {
+          if (search)
+            return and(
+              eq(project.organisationId, request.organisationId),
+              like(project.name, `%${search}%`)
+            );
+
+          return eq(project.organisationId, request.organisationId);
+        }
       });
 
-      return reply.send(projects);
+      const [projects, counts] = await Promise.all([projectQuery, countsQuery]);
+
+      return reply.send({
+        data: projects,
+        rowCount: counts[0].count,
+        pageCount: Math.ceil(counts[0].count / limit)
+      });
+    }
+  });
+
+  const projectsSchema = z.object({
+    page: z.number().default(1),
+    limit: z.number().default(4)
+  });
+
+  fastify.route({
+    method: "GET",
+    url: "/projects",
+    schema: {
+      params: projectsSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Params: z.infer<typeof projectsSchema> }>,
+      reply
+    ) => {
+      const { page, limit } = request.params;
+
+      const [projectsCount, projects] = await Promise.all([
+        db
+          .select({ count: count() })
+          .from(projectsTable)
+          .where(eq(projectsTable.organisationId, request.organisationId)),
+        db.query.projectsTable.findMany({
+          limit: limit,
+          offset: page * limit,
+          orderBy: (project, { desc }) => [desc(project.createdAt)],
+          columns: {
+            id: true,
+            name: true,
+            createdAt: true
+          },
+          where: (project) => eq(project.organisationId, request.organisationId)
+        })
+      ]);
+
+      return reply.send({
+        data: projects,
+        rowCount: projectsCount[0].count,
+        pageCount: Math.ceil(projectsCount[0].count / limit)
+      });
     }
   });
 
