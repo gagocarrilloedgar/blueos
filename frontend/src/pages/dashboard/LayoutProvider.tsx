@@ -33,7 +33,7 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
     const loadedProjects = await data.json();
 
     if (loadedProjects) {
-      setProjects(loadedProjects);
+      setProjects(loadedProjects.data);
     }
   }, []);
 

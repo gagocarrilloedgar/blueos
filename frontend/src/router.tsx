@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { Sheet, SheetContent } from "./components/ui/sheet";
 import { Login, SignUp } from "./pages/auth";
 import { EditProject } from "./pages/dashboard/EditProject/EditProject";
@@ -33,7 +33,28 @@ export const router = createBrowserRouter([
       },
       {
         path: "/projects",
-        element: <ProjectsList />
+        element: <Outlet />,
+        children: [
+          {
+            path: "/projects/:projectId",
+            element: <>Test</>
+          },
+          {
+            path: "",
+            element: (
+              <>
+                <ProjectsList />
+                <Outlet />
+              </>
+            ),
+            children: [
+              {
+                path: "/projects/:projectId/details",
+                element: <EditProject />
+              }
+            ]
+          }
+        ]
       },
       {
         path: "/login*",

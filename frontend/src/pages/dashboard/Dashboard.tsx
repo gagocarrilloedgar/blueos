@@ -76,7 +76,10 @@ const Breadcrumbs = () => {
     <Breadcrumb>
       <BreadcrumbList>
         {breadcrumbs.map((breadcrumb, index) => (
-          <span key={breadcrumb.href}>
+          <div
+            key={breadcrumb.href}
+            className="inline-flex items-center gap-1.5"
+          >
             <BreadcrumbItem className="hidden md:block">
               <BreadcrumbLink
                 onClick={() => {
@@ -90,7 +93,7 @@ const Breadcrumbs = () => {
             {index !== breadcrumbs.length - 1 && (
               <BreadcrumbSeparator className="hidden md:block" />
             )}
-          </span>
+          </div>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

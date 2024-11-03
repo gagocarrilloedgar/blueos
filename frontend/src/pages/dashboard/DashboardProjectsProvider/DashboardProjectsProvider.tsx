@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLayoutContext } from "../useLayoutContext";
 import { Context } from "./Context";
@@ -23,56 +18,35 @@ export interface TeamAccount {
 }
 
 export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
-  const [projects, setProjects] = useState<DashboardProject[]>([]);
-  const [accounts, setAccounts] = useState<TeamAccount[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const { activeOrg } = useLayoutContext();
 
-  const loadProjects = useCallback(async () => {
-    if (!activeOrg) return;
-
-    setLoading(true);
-
-    try {
-      const accountsPromise = fetch(
-        `http://localhost:3000/api/v1/organizations/accounts/${activeOrg.id}`,
+  const queryClient = useQueryClient();
+  const { data: projects, isLoading } = useQuery<DashboardProject[]>({
+    queryKey: ["projects", "dashboard"],
+    queryFn: async () => {
+      setLoading(true);
+      return fetch(`http://localhost:3000/api/v1/projects`, {
+        credentials: "include"
+      }).then(async (res) => {
+        const json = await res.json();
+        return json?.data;
+      });
+    }
+  });
+  const { data: accounts } = useQuery<TeamAccount[]>({
+    queryKey: ["accounts", "dashboard"],
+    queryFn: async () => {
+      return fetch(
+        `http://localhost:3000/api/v1/organizations/accounts/${activeOrg?.id}`,
         {
           credentials: "include"
         }
-      );
-
-      const projectsPromise = fetch("http://localhost:3000/api/v1/projects", {
-        credentials: "include"
-      });
-
-      const [projectsData, accountsData] = await Promise.all([
-        projectsPromise,
-        accountsPromise
-      ]);
-
-      const [projectsJson, accountsJson] = await Promise.all([
-        projectsData.json(),
-        accountsData.json()
-      ]);
-
-      if (projectsJson.errors || accountsJson.errors) {
-        throw new Error("Failed to dashboard data");
-      }
-
-      setProjects(projectsJson ?? []);
-      setAccounts(accountsJson);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load projects.");
-    } finally {
-      setLoading(false);
-    }
-  }, [activeOrg]);
-
-  useEffect(() => {
-    loadProjects();
-  }, [loadProjects]);
+      ).then((res) => res.json());
+    },
+    enabled: !!activeOrg
+  });
 
   const create = useCallback(
     async (name?: string) => {
@@ -103,9 +77,11 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
 
       toast.success("Project created successfully");
 
-      loadProjects();
+      await queryClient.invalidateQueries({
+        queryKey: ["projects", "dashboard"]
+      });
     },
-    [activeOrg, loadProjects]
+    [activeOrg]
   );
 
   const confirmDelete = useCallback(async (projectId: number) => {
@@ -117,39 +93,38 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
     toast.promise(resp, {
       loading: "Deleting project...",
       success: async () => {
-        await loadProjects();
+        await queryClient.invalidateQueries({
+          queryKey: ["projects", "dashboard"]
+        });
         return "Project deleted successfully";
       },
       error: "Failed to delete project"
     });
   }, []);
 
-  const deleteProject = useCallback(
-    async (projectId: number) => {
-      toast("Delete project", {
-        closeButton: true,
-        description: "This action will delete the project and all its data.",
-        action: (
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => confirmDelete(projectId)}
-          >
-            Delete
-          </Button>
-        )
-      });
-    },
-    [loadProjects]
-  );
+  const deleteProject = useCallback(async (projectId: number) => {
+    toast("Delete project", {
+      closeButton: true,
+      description: "This action will delete the project and all its data.",
+      action: (
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => confirmDelete(projectId)}
+        >
+          Delete
+        </Button>
+      )
+    });
+  }, []);
 
   const value = useMemo(
     () => ({
-      projects,
-      accounts,
+      projects: projects ?? [],
+      accounts: accounts ?? [],
       createProject: create,
       deleteProject,
-      loading: loading && !projects.length
+      loading: isLoading
     }),
     [projects, loading, create, accounts, deleteProject]
   );
