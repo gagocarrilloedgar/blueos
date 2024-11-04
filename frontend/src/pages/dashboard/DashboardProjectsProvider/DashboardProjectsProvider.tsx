@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getInitials } from "@/lib/getInitials";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ export interface DashboardProject {
 export interface TeamAccount {
   id: number;
   name: string;
+  avatar: string;
   createdAt: string;
 }
 
@@ -43,7 +45,14 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
         {
           credentials: "include"
         }
-      ).then((res) => res.json());
+      ).then(async (res) => {
+        const json = await res.json();
+        return json?.map((account: TeamAccount) => ({
+          ...account,
+          avatar: getInitials(account.name),
+          createdAt: new Date(account.createdAt).toLocaleDateString()
+        }));
+      });
     },
     enabled: !!activeOrg
   });

@@ -1,3 +1,4 @@
+import { clerkClient } from "@clerk/fastify";
 import { eq } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
@@ -9,6 +10,57 @@ import {
 } from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
+  // Invite user - use clerk
+  const inviteUserSchema = z.object({
+    email: z.string().email()
+  });
+  fastify.route({
+    method: "POST",
+    url: "/accounts/invite",
+    schema: {
+      body: inviteUserSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Body: z.infer<typeof inviteUserSchema> }>,
+      reply
+    ) => {
+      const { email } = request.body;
+
+      try {
+        const user = await clerkClient.users.createUser({
+          emailAddress: [email]
+        });
+
+        try {
+          await db.transaction(async (tx) => {
+            const account = await tx
+              .insert(accountsTable)
+              .values({
+                email,
+                name: email.split("@")[0],
+                userId: user.id // This should be optional for not-verified emails
+              })
+              .returning();
+
+            await tx.insert(membershipsTable).values({
+              accountId: account[0].id,
+              ownerId: account[0].id,
+              ownerType: "organisation"
+            });
+          });
+        } catch (error) {
+          await clerkClient.users.deleteUser(user.id);
+          return reply.status(500).send({ message: "Failed to invite user" });
+        }
+
+        return reply.send({ message: "Invited user" });
+      } catch (error) {
+
+        return reply.status(422).send({ message: "Invalid email" });
+      }
+    }
+  });
+
   // Get current account
   fastify.route({
     method: "GET",

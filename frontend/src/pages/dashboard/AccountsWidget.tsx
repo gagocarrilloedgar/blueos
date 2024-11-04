@@ -17,14 +17,18 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
-import { getInitials } from "@/lib/getInitials";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, Trash } from "lucide-react";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useAuth } from "../auth/AuthProvider";
 import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
 
 export const AccountsWidget = () => {
   const { accounts, loading } = useDashboardProjects();
+  const { account } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const actionLabel = "Create";
@@ -32,16 +36,58 @@ export const AccountsWidget = () => {
   const placeholder = "a@example.com";
   const emptyState = "There are no organisation members";
   const description = "Invite new organisation members to collaborate";
+  const queryClient = useQueryClient();
+
+  const { mutate: inviteUser } = useMutation({
+    mutationFn: async (email: string) => {
+      const fetchPromise = fetch(
+        `http://localhost:3000/api/v1/accounts/invite`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email })
+        }
+      );
+
+      return toast.promise(fetchPromise, {
+        loading: "Inviting user...",
+        success: "User invited successfully",
+        error: async (error) => {
+          if (error.includes("422")) return "The email is already in use";
+
+          return "Failed to invite user";
+        }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accounts", "dashboard"] });
+    }
+  });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const name = inputRef?.current?.value;
+    const email = inputRef?.current?.value;
 
-    await console.log(name);
+    if (!email || !isValidEmail(email)) {
+      toast.error("Please provide a valid email");
+      return;
+    }
+
+    inviteUser(email);
   };
 
   const isEmpty = !accounts?.length;
+
+  const canDeleteAccount = (accountName: string) => {
+    return accountName !== account?.name;
+  };
+
+  const navigate = useNavigate();
+  const goToAccounts = () => navigate("/accounts");
 
   return (
     <Card>
@@ -52,10 +98,8 @@ export const AccountsWidget = () => {
         </span>
         <Tooltip>
           <TooltipTrigger className="ml-auto">
-            <Button size="icon" variant="ghost" asChild>
-              <a href="/projects">
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
+            <Button size="icon" variant="ghost" onClick={goToAccounts}>
+              <ArrowUpRight className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>See all accounts</TooltipContent>
@@ -78,7 +122,7 @@ export const AccountsWidget = () => {
           </section>
         )}
         <section className="flex flex-col pb-4 gap-2">
-          {accounts?.map(({ name, createdAt }, index) => {
+          {accounts?.map(({ name, avatar, createdAt }, index) => {
             return (
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
@@ -86,7 +130,7 @@ export const AccountsWidget = () => {
                     <AvatarFallback
                       className={`uppercase ${getRandomPastelColor()}`}
                     >
-                      {getInitials(name)}
+                      {avatar}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -98,7 +142,12 @@ export const AccountsWidget = () => {
                   <span className="flex ml-auto gap-1">
                     <Tooltip>
                       <TooltipTrigger>
-                        <Button type="button" size="icon" variant="ghost">
+                        <Button
+                          disabled={!canDeleteAccount(name)}
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                        >
                           <Trash className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
@@ -128,4 +177,11 @@ export const AccountsWidget = () => {
       </CardContent>
     </Card>
   );
+};
+
+const isValidEmail = (email: string) => {
+  return email
+    .trim()
+    .toLowerCase()
+    .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 };
