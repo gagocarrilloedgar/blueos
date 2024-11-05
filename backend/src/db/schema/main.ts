@@ -12,7 +12,7 @@ export const ownerTypeEnum = pgEnum("owner", ["organisation", "portal"]);
 
 export const accountsTable = pgTable("accounts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: varchar("user_id", { length: 255 }).notNull().unique(),
+  userId: varchar("user_id", { length: 255 }).unique(),
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   createdAt: timestamp("created_at", {

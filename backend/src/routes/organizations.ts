@@ -32,6 +32,7 @@ export default async (fastify: FastifyInstance) => {
           account: {
             columns: {
               id: true,
+              userId: true,
               name: true,
               createdAt: true
             }
@@ -44,7 +45,12 @@ export default async (fastify: FastifyInstance) => {
         .filter((membership) => membership.account !== null)
         .map((membership) => membership.account);
 
-      return reply.send(accounts);
+      const mappedAccounts = accounts.map((account) => ({
+        ...account,
+        verified: account?.userId !== null
+      }));
+
+      return reply.send(mappedAccounts);
     }
   });
 

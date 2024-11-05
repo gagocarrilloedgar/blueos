@@ -14,6 +14,7 @@ export default async (fastify: FastifyInstance) => {
   const inviteUserSchema = z.object({
     email: z.string().email()
   });
+
   fastify.route({
     method: "POST",
     url: "/accounts/invite",
@@ -27,35 +28,31 @@ export default async (fastify: FastifyInstance) => {
       const { email } = request.body;
 
       try {
-        const user = await clerkClient.users.createUser({
-          emailAddress: [email]
+        await clerkClient.invitations.createInvitation({
+          ignoreExisting: true,
+          redirectUrl: "http://localhost:5173/signup",
+          emailAddress: email
         });
 
-        try {
-          await db.transaction(async (tx) => {
-            const account = await tx
-              .insert(accountsTable)
-              .values({
-                email,
-                name: email.split("@")[0],
-                userId: user.id // This should be optional for not-verified emails
-              })
-              .returning();
+        await db.transaction(async (tx) => {
+          const account = await tx
+            .insert(accountsTable)
+            .values({
+              email,
+              name: email.split("@")[0]
+            })
+            .returning();
 
-            await tx.insert(membershipsTable).values({
-              accountId: account[0].id,
-              ownerId: account[0].id,
-              ownerType: "organisation"
-            });
+          await tx.insert(membershipsTable).values({
+            accountId: account[0].id,
+            ownerId: request.organisationId,
+            ownerType: "organisation"
           });
-        } catch (error) {
-          await clerkClient.users.deleteUser(user.id);
-          return reply.status(500).send({ message: "Failed to invite user" });
-        }
+        });
 
         return reply.send({ message: "Invited user" });
       } catch (error) {
-
+        console.log(error);
         return reply.status(422).send({ message: "Invalid email" });
       }
     }
@@ -67,11 +64,11 @@ export default async (fastify: FastifyInstance) => {
     url: "/accounts/session",
     handler: async (request, reply) => {
       const { accountId } = request;
-      const account = await db
-        .select()
-        .from(accountsTable)
-        .where(eq(accountsTable.id, accountId));
-      return reply.send(account[0]);
+      const account = await db.query.accountsTable.findFirst({
+        where: eq(accountsTable.id, accountId)
+      });
+
+      return reply.send(account);
     }
   });
 
