@@ -38,7 +38,7 @@ export default function RootLayout() {
 const useIsAuthScreen = () => {
   const { pathname } = useLocation();
 
-  const noLayoutScreens = ["login", "signup", "onboarding"];
+  const noLayoutScreens = ["login", "signup", "onboarding", "confirm"];
 
   return noLayoutScreens.some((screen) => pathname.includes(screen));
 };

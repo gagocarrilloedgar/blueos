@@ -20,7 +20,7 @@ import {
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, Trash } from "lucide-react";
-import { useRef } from "react";
+import { PropsWithChildren, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../auth/AuthProvider";
@@ -122,7 +122,7 @@ export const AccountsWidget = () => {
           </section>
         )}
         <section className="flex flex-col pb-4 gap-2">
-          {accounts?.map(({ name, avatar, createdAt }, index) => {
+          {accounts?.map(({ name, avatar, createdAt, verified }, index) => {
             return (
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
@@ -134,9 +134,12 @@ export const AccountsWidget = () => {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
-                      {name}
-                    </p>
+                    <span className="flex items-center gap-2">
+                      <p className="flex gap-2 text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
+                        {name}
+                      </p>
+                      {!verified && <Pill> Unconfirmed </Pill>}
+                    </span>
                     <p className="text-xs overflow-hidden text-muted-foreground whitespace-nowrap overflow-ellipsis">{`Active since: ${createdAt}`}</p>
                   </div>
                   <span className="flex ml-auto gap-1">
@@ -151,7 +154,11 @@ export const AccountsWidget = () => {
                           <Trash className="w-4 h-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Remove from the team</TooltipContent>
+                      <TooltipContent>
+                        {canDeleteAccount(name)
+                          ? "Remove from the team"
+                          : "Cannot remove yourself"}
+                      </TooltipContent>
                     </Tooltip>
                   </span>
                 </div>
@@ -184,4 +191,12 @@ const isValidEmail = (email: string) => {
     .trim()
     .toLowerCase()
     .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+};
+
+const Pill = ({ children }: PropsWithChildren) => {
+  return (
+    <span className="bg-amber-100 text-xs w-fit px-1 py-0.5 rounded-full flex items-center">
+      {children}
+    </span>
+  );
 };

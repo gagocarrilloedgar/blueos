@@ -6,10 +6,16 @@ export interface Account {
   initials: string;
   email: string;
 }
+
+export interface ConfirmationAccount {
+  organisationId: number;
+  organisationName: string;
+}
+
 interface AuthContextState {
   account: Account | null;
+  confirmationAccount: ConfirmationAccount | null;
   loading: boolean;
-  token: string | null;
   logout: () => Promise<void>;
 }
 

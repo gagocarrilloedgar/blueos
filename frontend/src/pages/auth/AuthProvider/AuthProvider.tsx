@@ -9,13 +9,17 @@ import {
 
 import { getInitials } from "@/lib/getInitials";
 import { useClerk } from "@clerk/clerk-react";
-import { Account, AuthContext } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Account, AuthContext, ConfirmationAccount } from "./AuthContext";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [account, setAccount] = useState<Account | null>(null);
-  const [token] = useState<string | null>(null);
+  const [confirmationAccount, setConfirmationAccount] =
+    useState<ConfirmationAccount | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
   const { signOut } = useClerk();
+  const navigate = useNavigate();
 
   const initSession = useCallback(async () => {
     const newAccount = await fetch(
@@ -25,7 +29,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
     );
 
-    if (!newAccount.ok) return;
+    const json = await newAccount.json();
+
+    if (!newAccount.ok && json.message === "Not verified") {
+      setConfirmationAccount({
+        organisationId: json.data.organisation.id,
+        organisationName: json.data.organisation.name
+      });
+      return navigate("/confirm");
+    }
+
     const account = await newAccount.json();
 
     const mappedAccount = {
@@ -50,10 +63,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     () => ({
       account,
       loading,
-      token,
+      confirmationAccount,
       logout
     }),
-    [token, account, loading, logout]
+    [account, loading, logout, confirmationAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

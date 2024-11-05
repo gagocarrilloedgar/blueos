@@ -17,6 +17,7 @@ export interface TeamAccount {
   name: string;
   avatar: string;
   createdAt: string;
+  verified: boolean;
 }
 
 export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {

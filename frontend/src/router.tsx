@@ -3,6 +3,7 @@ import { Sheet, SheetContent } from "./components/ui/sheet";
 import { Login, SignUp } from "./pages/auth";
 import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
+import { ConfirmAccount } from "./pages/invite/ConfirmAccount";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
 import ProjectsList from "./pages/projects/ProjectsList/ProjectsList";
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
             <Onboarding />
           </OnboardingProvider>
         )
+      },
+      {
+        path: "/confirm",
+        element: <ConfirmAccount />
       }
     ]
   }
