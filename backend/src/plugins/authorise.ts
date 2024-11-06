@@ -10,7 +10,10 @@ import {
 } from "../db/schema/main";
 
 const routePrefix = "/api/v1";
-const skipAccountValidationRoutes = ["/accounts-onboarding"];
+const skipAccountValidationRoutes = [
+  "/accounts-onboarding",
+  "/accounts/confirm"
+];
 
 const authorise = (fastify: FastifyInstance) => {
   fastify.register(clerkPlugin);

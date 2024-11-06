@@ -10,7 +10,36 @@ import {
 } from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
-  // Invite user - use clerk
+  // Confirm user account & link to membership
+  const confirmAccountSchema = z.object({
+    name: z.string(),
+    userId: z.string()
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/accounts/confirm",
+    schema: {
+      body: confirmAccountSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Body: z.infer<typeof confirmAccountSchema> }>,
+      reply
+    ) => {
+      const { name, userId } = request.body;
+
+      if (userId !== request.userId)
+        return reply.status(422).send({ message: "Bad request" });
+
+      await db
+        .update(accountsTable)
+        .set({ name, userId })
+        .where(eq(accountsTable.userId, userId));
+
+      return reply.status(200).send({ message: "Account confirmed" });
+    }
+  });
+
   const inviteUserSchema = z.object({
     email: z.string().email()
   });

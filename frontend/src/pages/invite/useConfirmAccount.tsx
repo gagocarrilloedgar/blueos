@@ -1,5 +1,9 @@
+import { useUser } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const validName = (error: string) =>
@@ -13,13 +17,42 @@ const FormSchema = z.object({
 });
 
 export const useConfirmAccount = () => {
+  const { user } = useUser();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     mode: "onSubmit"
   });
 
+  const navigate = useNavigate();
+
+  const { mutate } = useMutation({
+    mutationFn: async (data: { name: string; userId: string }) => {
+      const mutatate = fetch("http://localhost:3000/api/v1/accounts/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      });
+
+      return toast.promise(mutatate, {
+        loading: "Confirming account...",
+        success: "Account confirmed",
+        error: "Something went wrong"
+      });
+    },
+    onSuccess: () => {
+      navigate("/");
+    }
+  });
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+    const name = `${data.name} ${data.lastname}`;
+
+    if (!user?.id) return;
+
+    mutate({ name, userId: user.id });
   }
 
   return {
