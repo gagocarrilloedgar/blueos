@@ -26,6 +26,7 @@ export default async (fastify: FastifyInstance) => {
       request: FastifyRequest<{ Body: z.infer<typeof confirmAccountSchema> }>,
       reply
     ) => {
+      const { accountId } = request;
       const { name, userId } = request.body;
 
       if (userId !== request.userId)
@@ -34,7 +35,7 @@ export default async (fastify: FastifyInstance) => {
       await db
         .update(accountsTable)
         .set({ name, userId })
-        .where(eq(accountsTable.userId, userId));
+        .where(eq(accountsTable.id, accountId));
 
       return reply.status(200).send({ message: "Account confirmed" });
     }
@@ -97,7 +98,15 @@ export default async (fastify: FastifyInstance) => {
         where: eq(accountsTable.id, accountId)
       });
 
-      return reply.send(account);
+      return reply.send({
+        data: {
+          ...account,
+          organisation: {
+            id: request.organisationId,
+            name: request.organisationName
+          }
+        }
+      });
     }
   });
 

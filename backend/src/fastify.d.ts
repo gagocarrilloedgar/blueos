@@ -7,5 +7,7 @@ declare module "fastify" {
     email: string;
     accountId: number;
     organisationId: number;
+    organisationName: string;
+    email: string;
   }
 }

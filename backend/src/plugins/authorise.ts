@@ -10,10 +10,7 @@ import {
 } from "../db/schema/main";
 
 const routePrefix = "/api/v1";
-const skipAccountValidationRoutes = [
-  "/accounts-onboarding",
-  "/accounts/confirm"
-];
+const skipAccountValidationRoutes = ["/accounts-onboarding"];
 
 const authorise = (fastify: FastifyInstance) => {
   fastify.register(clerkPlugin);
@@ -64,23 +61,14 @@ const authorise = (fastify: FastifyInstance) => {
 
     const organisation = organisationInfo[0];
 
-    if (organisation?.userId !== request.userId)
-      return reply.status(401).send({
-        message: "Not verified",
-        data: {
-          organisation: {
-            name: organisation?.organisationName,
-            id: organisation?.organisationId
-          }
-        }
-      });
-
     if (!organisation?.accountId || !organisation?.organisationId) {
       return reply.status(401).send({ error: "Unauthorized" });
     }
 
     request.accountId = organisation.accountId;
     request.organisationId = organisation.organisationId;
+    request.organisationName = organisation.organisationName;
+    request.email = user.emailAddresses[0].emailAddress;
   });
 };
 
