@@ -1,5 +1,5 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { AccountsList } from "./pages/accounts/AccountsList";
+import { AccountsList } from "./pages/accounts/AccountList";
 import { Login, SignUp } from "./pages/auth";
 import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";

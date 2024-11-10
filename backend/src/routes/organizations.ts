@@ -7,7 +7,7 @@ import { membershipsTable, organisationsTable } from "../db/schema/main";
 export default async (fastify: FastifyInstance) => {
   const organizationIdSchema = z.object({
     organizationId: z.string(),
-    page: z.number().optional().default(1),
+    page: z.number().optional().default(0),
     limit: z.number().optional().default(5)
   });
 
@@ -37,7 +37,7 @@ export default async (fastify: FastifyInstance) => {
           id: true
         },
         limit: limit,
-        offset: (page - 1) * limit,
+        offset: page * limit,
         with: {
           account: {
             columns: {

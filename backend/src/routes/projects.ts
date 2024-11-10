@@ -6,7 +6,7 @@ import { clientsTable, projectsTable } from "../db/schema/main";
 
 const projecRoutes = (fastify: FastifyInstance) => {
   const projectsOverviewSchema = z.object({
-    page: z.coerce.number(),
+    page: z.coerce.number().default(0),
     limit: z.coerce.number().default(15),
     search: z.string().optional().nullable()
   });
@@ -31,7 +31,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
 
       const projectQuery = db.query.projectsTable.findMany({
         limit: limit,
-        offset: (page - 1) * limit,
+        offset: page * limit,
         columns: {
           id: true,
           name: true,
@@ -69,7 +69,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
   });
 
   const projectsSchema = z.object({
-    page: z.number().default(1),
+    page: z.number().default(0),
     limit: z.number().default(5)
   });
 
@@ -93,7 +93,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
         db.query.projectsTable.findMany({
           orderBy: (project, { asc }) => asc(project.name),
           limit: limit,
-          offset: (page - 1) * limit,
+          offset: page * limit,
           columns: {
             id: true,
             name: true,
