@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/fastify";
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, like } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { db } from "../db";
@@ -157,25 +157,31 @@ export default async (fastify: FastifyInstance) => {
   });
 
   const getAccountsListSchema = z.object({
-    organizationId: z.string(),
-    page: z.number().optional().default(0),
-    limit: z.number().optional().default(5)
+    organizationId: z.string()
+  });
+
+  const getAccountsListQuerySchema = z.object({
+    page: z.coerce.number().default(0),
+    limit: z.coerce.number().default(15),
+    search: z.string().optional()
   });
 
   fastify.route({
     method: "GET",
     url: "/accounts/organizations/:organizationId",
     schema: {
-      params: getAccountsListSchema
+      params: getAccountsListSchema,
+      querystring: getAccountsListQuerySchema
     },
     handler: async (
       request: FastifyRequest<{
         Params: z.infer<typeof getAccountsListSchema>;
+        Querystring: z.infer<typeof getAccountsListQuerySchema>;
       }>,
       reply
     ) => {
       const orgId = Number(request.params.organizationId);
-      const { page, limit } = request.params;
+      const { page, limit, search } = request.query;
 
       if (orgId !== request.organisationId)
         return reply.status(422).send({ message: "Malformed request" });
@@ -185,29 +191,36 @@ export default async (fastify: FastifyInstance) => {
         .from(membershipsTable)
         .where(eq(membershipsTable.ownerId, request.organisationId));
 
-      const membershipsPromise = db.query.membershipsTable.findMany({
-        columns: {
-          id: true
-        },
-        limit: limit,
-        offset: page * limit,
-        with: {
+      const membershipsPromise2 = db
+        .select({
           account: {
-            columns: {
-              id: true,
-              userId: true,
-              name: true,
-              email: true,
-              createdAt: true
-            }
+            id: accountsTable.id,
+            userId: accountsTable.userId,
+            createdAt: accountsTable.createdAt,
+            name: accountsTable.name,
+            email: accountsTable.email
           }
-        },
-        where: eq(membershipsTable.ownerId, request.organisationId)
-      });
+        })
+        .from(accountsTable)
+        .innerJoin(
+          membershipsTable,
+          eq(membershipsTable.accountId, accountsTable.id)
+        )
+        .where(() => {
+          if (!search) return eq(membershipsTable.ownerId, orgId);
+
+          if (search)
+            return and(
+              eq(membershipsTable.ownerId, orgId),
+              like(accountsTable.name, `%${search}%`)
+            );
+        })
+        .limit(limit)
+        .offset(page * limit);
 
       const [membershipsCount, memberships] = await Promise.all([
         membershipsCountPromise,
-        membershipsPromise
+        membershipsPromise2
       ]);
 
       const accounts = memberships
