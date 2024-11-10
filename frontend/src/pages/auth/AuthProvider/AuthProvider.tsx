@@ -2,26 +2,29 @@
 import {
   PropsWithChildren,
   useCallback,
-  useEffect,
   useMemo,
   useState
 } from "react";
 
 import { getInitials } from "@/lib/getInitials";
 import { useClerk } from "@clerk/clerk-react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Account, AuthContext, ConfirmationAccount } from "./AuthContext";
+import { AuthContext, ConfirmationAccount } from "./AuthContext";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [account, setAccount] = useState<Account | null>(null);
   const [confirmationAccount, setConfirmationAccount] =
     useState<ConfirmationAccount | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(true);
   const { signOut } = useClerk();
   const navigate = useNavigate();
 
-  const initSession = useCallback(async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["account"],
+    queryFn: () => initSession()
+  });
+
+  const initSession = async () => {
     const newAccount = await fetch(
       "http://localhost:3000/api/v1/accounts/session",
       {
@@ -29,44 +32,45 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
     );
 
-    const json = await newAccount.json();
+    const data = await newAccount.json();
+    const account = data.data;
 
-    if (!newAccount.ok && json.message === "Not verified") {
+    if (!account) navigate("/login");
+
+    if (!account?.userId) {
       setConfirmationAccount({
-        organisationId: json.data.organisation.id,
-        organisationName: json.data.organisation.name
+        organisationId: account.organisation.id,
+        organisationName: account.organisation.name
       });
-      return navigate("/confirm");
+      navigate("/confirm");
     }
-
-    const account = await newAccount.json();
 
     const mappedAccount = {
       id: account.id,
       name: account.name,
       initials: getInitials(account.name),
-      email: account.email
+      email: account.email,
+      organisation: {
+        id: account?.organisation.id,
+        name: account?.organisation.name
+      }
     };
 
-    if (account) setAccount(mappedAccount);
-  }, []);
-
-  useEffect(() => {
-    initSession().finally(() => setLoading(false));
-  }, []);
+    return mappedAccount;
+  };
 
   const logout = useCallback(async () => {
     await signOut();
-  }, []);
+  }, [signOut]);
 
   const value = useMemo(
     () => ({
-      account,
-      loading,
+      account: data,
+      loading: isLoading,
       confirmationAccount,
       logout
     }),
-    [account, loading, logout, confirmationAccount]
+    [data, isLoading, logout, confirmationAccount]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

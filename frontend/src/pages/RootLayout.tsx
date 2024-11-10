@@ -14,15 +14,13 @@ if (!PUBLISHABLE_KEY) {
 }
 
 export default function RootLayout() {
-  const navigate = useNavigate();
-
   return (
     <ClerkProvider
       routerPush={(to) => {
-        navigate(to);
+        window.location.href = to;
       }}
       routerReplace={(to) => {
-        navigate(to, { replace: true });
+        window.location.href = to;
       }}
       publishableKey={PUBLISHABLE_KEY}
     >
@@ -72,20 +70,12 @@ const AuthLoader = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isLoaded && !account && !loading) navigate("/onboarding");
 
-    if (isLoaded && status === "missing_requirements") {
-      navigate("/signup#/verify-email-address");
-    }
+    if (isLoaded && status === "abandoned") navigate("/signup");
 
-    if (isLoaded && status === "abandoned") {
-      navigate("/signup");
-    }
+    if (isLoaded && !userId) navigate("/login");
+  }, [isLoaded, userId, account, loading, status]);
 
-    if (isLoaded && !userId) {
-      navigate("/login");
-    }
-  }, [isLoaded, userId, account?.id, loading]);
-
-  if (!isLoaded) {
+  if (loading || !account) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
         <Loader />

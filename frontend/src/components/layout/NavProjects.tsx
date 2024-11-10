@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { SidebarProject } from "@/pages/dashboard/LayoutContext";
 import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export function NavProjects() {
   const { projects } = useLayoutContext();
@@ -17,16 +17,21 @@ export function NavProjects() {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
-      <ProjectsSection projects={projects} />
+      <ProjectsSection projects={projects?.data} count={projects?.rowCount} />
     </SidebarGroup>
   );
 }
-
-const ProjectsSection = ({ projects }: { projects: SidebarProject[] }) => {
+const ProjectsSection = ({
+  projects,
+  count
+}: {
+  projects: SidebarProject[] | undefined;
+  count: number | undefined;
+}) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const showAll = projects?.length > 5;
+  const showAll = count && count > 5;
 
   if (!projects) return null;
 
@@ -49,9 +54,11 @@ const ProjectsSection = ({ projects }: { projects: SidebarProject[] }) => {
       })}
       {showAll && (
         <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>View all</span>
+          <SidebarMenuButton className="text-sidebar-foreground/70" asChild>
+            <Link to="/projects">
+              <MoreHorizontal className="text-sidebar-foreground/70" />
+              <span>View all</span>
+            </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       )}

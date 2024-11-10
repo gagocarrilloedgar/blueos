@@ -70,7 +70,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
 
   const projectsSchema = z.object({
     page: z.number().default(1),
-    limit: z.number().default(4)
+    limit: z.number().default(5)
   });
 
   fastify.route({
@@ -91,9 +91,9 @@ const projecRoutes = (fastify: FastifyInstance) => {
           .from(projectsTable)
           .where(eq(projectsTable.organisationId, request.organisationId)),
         db.query.projectsTable.findMany({
+          orderBy: (project, { asc }) => asc(project.name),
           limit: limit,
           offset: page * limit,
-          orderBy: (project, { desc }) => [desc(project.createdAt)],
           columns: {
             id: true,
             name: true,

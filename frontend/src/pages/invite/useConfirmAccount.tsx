@@ -27,23 +27,28 @@ export const useConfirmAccount = () => {
 
   const { mutate } = useMutation({
     mutationFn: async (data: { name: string; userId: string }) => {
-      const mutatate = fetch("http://localhost:3000/api/v1/accounts/confirm", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify(data)
-      });
+      const toastLoading = toast.loading("Confirming account...");
 
-      return toast.promise(mutatate, {
-        loading: "Confirming account...",
-        success: "Account confirmed",
-        error: "Something went wrong"
-      });
-    },
-    onSuccess: () => {
-      navigate("/");
+      const mutatate = await fetch(
+        "http://localhost:3000/api/v1/accounts/confirm",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(data)
+        }
+      );
+
+      if (mutatate.ok) {
+        toast.dismiss(toastLoading);
+        toast.success("Account confirmed");
+        return navigate("/");
+      }
+
+      toast.dismiss(toastLoading);
+      toast.error("Something went wrong");
     }
   });
 

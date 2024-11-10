@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   PropsWithChildren,
   useCallback,
@@ -11,7 +12,6 @@ import { LayoutContext, Organisation, SidebarProject } from "./LayoutContext";
 export const LayoutProvider = ({ children }: PropsWithChildren) => {
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [activeOrg, setActiveOrg] = useState<Organisation | null>(null);
-  const [projects, setProjects] = useState<SidebarProject[]>([]);
   const { account } = useAuth();
 
   const [chats] = useState<
@@ -22,7 +22,13 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
     }[]
   >(new Array(1).fill({ id: 1, name: "general", url: "/general" }));
 
-  const fetchProjects = useCallback(async (organisationId: number) => {
+  const { data: projects } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => fetchProjects(activeOrg?.id!),
+    enabled: !!activeOrg?.id
+  });
+
+  const fetchProjects = async (organisationId: number) => {
     const data = await fetch(
       `http://localhost:3000/api/v1/projects?organisationId=${organisationId}`,
       {
@@ -30,12 +36,14 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
       }
     );
 
-    const loadedProjects = await data.json();
+    const loadedProjects: {
+      data: SidebarProject[];
+      rowCount: number;
+      pageCount: number;
+    } = await data.json();
 
-    if (loadedProjects) {
-      setProjects(loadedProjects.data);
-    }
-  }, []);
+    return loadedProjects;
+  };
 
   const fetchInitialData = useCallback(async () => {
     if (!account) return;

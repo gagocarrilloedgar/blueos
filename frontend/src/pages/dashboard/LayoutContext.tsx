@@ -12,9 +12,15 @@ export interface SidebarProject {
   name: string;
 }
 
+export interface ProjectsResponse {
+  data: SidebarProject[];
+  rowCount: number;
+  pageCount: number;
+}
+
 interface ContextState {
   organisations: Organisation[];
-  projects: SidebarProject[];
+  projects: ProjectsResponse | undefined;
   chats: {
     id: number;
     name: string;

@@ -5,6 +5,10 @@ export interface Account {
   name: string;
   initials: string;
   email: string;
+  organisation: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface ConfirmationAccount {
@@ -13,7 +17,7 @@ export interface ConfirmationAccount {
 }
 
 interface AuthContextState {
-  account: Account | null;
+  account: Account | undefined;
   confirmationAccount: ConfirmationAccount | null;
   loading: boolean;
   logout: () => Promise<void>;
