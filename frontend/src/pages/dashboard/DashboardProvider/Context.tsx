@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { DashboardProject, TeamAccount } from "./DashboardProjectsProvider";
+import { DashboardProject, TeamAccount } from "./DashboardProvider";
 
 interface ContextState {
   projects: DashboardProject[];

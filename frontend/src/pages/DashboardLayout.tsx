@@ -1,13 +1,13 @@
 
 import { Outlet } from "react-router-dom";
-import { DashboardProjectsProvider } from "./dashboard/DashboardProjectsProvider/DashboardProjectsProvider";
+import { DashboardProvider } from "./dashboard/DashboardProvider/DashboardProvider";
 import { Widgets } from "./dashboard/Widgets";
 
 export default function DashboardLayout() {
   return (
-    <DashboardProjectsProvider>
+    <DashboardProvider>
       <Widgets />
       <Outlet />
-    </DashboardProjectsProvider>
+    </DashboardProvider>
   );
 }

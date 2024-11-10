@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { db } from "../db";
@@ -6,7 +6,9 @@ import { membershipsTable, organisationsTable } from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
   const organizationIdSchema = z.object({
-    organizationId: z.string()
+    organizationId: z.string(),
+    page: z.number().optional().default(1),
+    limit: z.number().optional().default(5)
   });
 
   fastify.route({
@@ -20,14 +22,22 @@ export default async (fastify: FastifyInstance) => {
       reply
     ) => {
       const orgId = Number(request.params.organizationId);
+      const { page, limit } = request.params;
 
       if (orgId !== request.organisationId)
         return reply.status(422).send({ message: "Malformed request" });
 
-      const memberships = await db.query.membershipsTable.findMany({
+      const membershipsCountPromise = db
+        .select({ count: count() })
+        .from(membershipsTable)
+        .where(eq(membershipsTable.ownerId, request.organisationId));
+
+      const membershipsPromise = db.query.membershipsTable.findMany({
         columns: {
           id: true
         },
+        limit: limit,
+        offset: (page - 1) * limit,
         with: {
           account: {
             columns: {
@@ -41,6 +51,11 @@ export default async (fastify: FastifyInstance) => {
         where: eq(membershipsTable.ownerId, request.organisationId)
       });
 
+      const [membershipsCount, memberships] = await Promise.all([
+        membershipsCountPromise,
+        membershipsPromise
+      ]);
+
       const accounts = memberships
         .filter((membership) => membership.account !== null)
         .map((membership) => membership.account);
@@ -50,7 +65,11 @@ export default async (fastify: FastifyInstance) => {
         verified: account?.userId !== null
       }));
 
-      return reply.send(mappedAccounts);
+      return reply.send({
+        data: mappedAccounts,
+        rowCount: membershipsCount[0].count,
+        pageCount: Math.ceil(membershipsCount[0].count / limit)
+      });
     }
   });
 

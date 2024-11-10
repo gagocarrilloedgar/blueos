@@ -20,7 +20,7 @@ export interface TeamAccount {
   verified: boolean;
 }
 
-export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
+export const DashboardProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { activeOrg } = useLayoutContext();
@@ -48,7 +48,7 @@ export const DashboardProjectsProvider = ({ children }: PropsWithChildren) => {
         }
       ).then(async (res) => {
         const json = await res.json();
-        return json?.map((account: TeamAccount) => ({
+        return json?.data?.map((account: TeamAccount) => ({
           ...account,
           avatar: getInitials(account.name),
           createdAt: new Date(account.createdAt).toLocaleDateString()

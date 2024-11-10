@@ -31,7 +31,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
 
       const projectQuery = db.query.projectsTable.findMany({
         limit: limit,
-        offset: page * limit,
+        offset: (page - 1) * limit,
         columns: {
           id: true,
           name: true,
@@ -93,7 +93,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
         db.query.projectsTable.findMany({
           orderBy: (project, { asc }) => asc(project.name),
           limit: limit,
-          offset: page * limit,
+          offset: (page - 1) * limit,
           columns: {
             id: true,
             name: true,

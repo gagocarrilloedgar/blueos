@@ -31,10 +31,10 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { ArrowUpRight, Edit, Trash } from "lucide-react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
+import { useDashboard } from "./DashboardProvider/useDashboard";
 
 export const ProjectsWidget = () => {
-  const { projects, loading, createProject } = useDashboardProjects();
+  const { projects, loading, createProject } = useDashboard();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -141,7 +141,7 @@ export const ProjectsWidget = () => {
 };
 
 const ProjectEditMenu = ({ name, id }: { name: string; id: number }) => {
-  const { deleteProject } = useDashboardProjects();
+  const { deleteProject } = useDashboard();
   const navigate = useNavigate();
 
   const onDelete = async () => await deleteProject(id);

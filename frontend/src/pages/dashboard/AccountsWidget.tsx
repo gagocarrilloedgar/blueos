@@ -24,10 +24,10 @@ import { PropsWithChildren, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../auth/AuthProvider";
-import { useDashboardProjects } from "./DashboardProjectsProvider/useDashboardProjects";
+import { useDashboard } from "./DashboardProvider/useDashboard";
 
 export const AccountsWidget = () => {
-  const { accounts, loading } = useDashboardProjects();
+  const { accounts, loading } = useDashboard();
   const { account } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
 
