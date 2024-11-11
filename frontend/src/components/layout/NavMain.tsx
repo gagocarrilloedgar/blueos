@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@/components/ui/sidebar";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export function NavMain({
   items,
@@ -48,7 +48,7 @@ export function NavMain({
                     tooltip={item.title}
                   >
                     {item.icon && <item.icon />}
-                    <a href={fullUrl}>{item.title}</a>
+                    <Link to={fullUrl}>{item.title}</Link>
                     {/* <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />*/}
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -57,9 +57,9 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <Link to={subItem.url}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

@@ -106,9 +106,9 @@ export function OnboardingForm() {
         </Button>*/}
         <FormDescription>
           You can always update this in your{" "}
-          <a className="text-blue-500 underline" href="/settings">
+          <Link className="text-blue-500 underline" href="/settings">
             workspace settings
-          </a>
+          </Link>
         </FormDescription>
         <FormMessage />
         <Button type="submit">Create my workspace</Button>

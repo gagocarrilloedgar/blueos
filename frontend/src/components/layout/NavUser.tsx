@@ -1,10 +1,5 @@
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut
-} from "lucide-react";
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -83,18 +78,22 @@ export function NavUser() {
             </DropdownMenuGroup>*/}
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <BadgeCheck className="mr-2 w-4 h-4" />
-                  Account
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">
+                    <BadgeCheck className="mr-2 w-4 h-4" />
+                    Account
+                  </Link>
                 </DropdownMenuItem>
                 <ModeToggle />
-                <DropdownMenuItem>
+                {/*<DropdownMenuItem>
                   <CreditCard className="mr-2 w-4 h-4" />
                   Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell className="mr-2 w-4 h-4" />
-                  Notifications
+                </DropdownMenuItem>*/}
+                <DropdownMenuItem asChild>
+                  <Link to="/notifications">
+                    <Bell className="mr-2 w-4 h-4" />
+                    Notifications
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />

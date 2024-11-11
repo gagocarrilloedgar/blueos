@@ -17,6 +17,7 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { useLayoutContext } from "@/pages/dashboard/useLayoutContext";
+import { Link } from "react-router-dom";
 
 export function NavChats() {
   const { isMobile } = useSidebar();
@@ -29,10 +30,10 @@ export function NavChats() {
         {chats?.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <Link to={item.url}>
                 <Frame />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
