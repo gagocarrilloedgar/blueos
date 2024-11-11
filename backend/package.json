@@ -1,3 +1,4 @@
+
 {
   "name": "blueosapi",
   "version": "1.0.0",
@@ -9,7 +10,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:reset": "docker compose down -v && docker compose up -d",
-    "db:seed": "pnpm db:migrate && pnpm tsx src/db/seed.ts"
+    "db:seed": "pnpm db:migrate && pnpm tsx src/db/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "keywords": [],
   "author": "",

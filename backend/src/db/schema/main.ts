@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -46,7 +47,8 @@ export const portalsTable = pgTable("portals", {
   name: varchar({ length: 255 }).notNull(),
   membershipType: varchar("membership_type", { length: 256 }).default("portal"),
   organisationId: integer("organisation_id").references(
-    () => organisationsTable.id
+    () => organisationsTable.id,
+    { onDelete: "cascade" }
   ),
   createdAt: timestamp("created_at", {
     precision: 6,
@@ -62,7 +64,8 @@ export const clientsTable = pgTable("clients", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   organisationId: integer("organisation_id").references(
-    () => organisationsTable.id
+    () => organisationsTable.id,
+    { onDelete: "cascade" }
   ),
   createdAt: timestamp("created_at", {
     precision: 6,
@@ -75,8 +78,11 @@ export type OwnerType = (typeof ownerTypeEnum)["enumValues"][number];
 export const membershipsTable = pgTable("memberships", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   ownerId: integer("owner_id").notNull(),
+  isAdmin: boolean("is_admin").default(false),
   ownerType: ownerTypeEnum("owner_type").default("organisation"),
-  accountId: integer("account_id").references(() => accountsTable.id),
+  accountId: integer("account_id").references(() => accountsTable.id, {
+    onDelete: "cascade"
+  }),
   createdAt: timestamp("created_at", {
     precision: 6,
     withTimezone: true

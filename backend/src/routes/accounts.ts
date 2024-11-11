@@ -10,6 +10,42 @@ import {
 } from "../db/schema/main";
 
 export default async (fastify: FastifyInstance) => {
+  // Delete account & membership
+  const deleteAccountSchema = z.object({
+    accountId: z.coerce.number()
+  });
+
+  fastify.route({
+    method: "DELETE",
+    url: "/accounts/:accountId",
+    schema: {
+      params: deleteAccountSchema
+    },
+    handler: async (
+      request: FastifyRequest<{ Params: z.infer<typeof deleteAccountSchema> }>,
+      reply
+    ) => {
+      const { accountId } = request.params;
+      const { isAdmin } = request;
+
+      if (!isAdmin) return reply.status(422).send({ message: "Unauthorized" });
+
+      const account = await db.query.accountsTable.findFirst({
+        where: eq(accountsTable.id, accountId)
+      });
+
+      if (!account?.userId)
+        return reply.status(422).send({ message: "Account not found" });
+
+      await Promise.all([
+        clerkClient.users.deleteUser(account.userId),
+        db.delete(accountsTable).where(eq(accountsTable.id, accountId))
+      ]);
+
+      return reply.status(200).send({ message: "Account deleted" });
+    }
+  });
+
   // Confirm user account & link to membership
   const confirmAccountSchema = z.object({
     name: z.string(),
@@ -101,6 +137,7 @@ export default async (fastify: FastifyInstance) => {
       return reply.send({
         data: {
           ...account,
+          isAdmin: request.isAdmin,
           organisation: {
             id: request.organisationId,
             name: request.organisationName
@@ -193,6 +230,7 @@ export default async (fastify: FastifyInstance) => {
 
       const membershipsPromise2 = db
         .select({
+          isAdmin: membershipsTable.isAdmin,
           account: {
             id: accountsTable.id,
             userId: accountsTable.userId,
@@ -225,7 +263,10 @@ export default async (fastify: FastifyInstance) => {
 
       const accounts = memberships
         .filter((membership) => membership.account !== null)
-        .map((membership) => membership.account);
+        .map((membership) => ({
+          ...membership.account,
+          isAdmin: membership.isAdmin
+        }));
 
       const mappedAccounts = accounts.map((account) => ({
         ...account,

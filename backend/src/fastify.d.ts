@@ -9,5 +9,6 @@ declare module "fastify" {
     organisationId: number;
     organisationName: string;
     email: string;
+    isAdmin: boolean;
   }
 }

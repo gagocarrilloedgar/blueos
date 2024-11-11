@@ -37,6 +37,7 @@ const authorise = (fastify: FastifyInstance) => {
 
     const organisationInfo = await db
       .select({
+        isAdmin: membershipsTable.isAdmin,
         accountId: accountsTable.id,
         userId: accountsTable.userId,
         organisationId: organisationsTable.id,
@@ -69,6 +70,7 @@ const authorise = (fastify: FastifyInstance) => {
     request.organisationId = organisation.organisationId;
     request.organisationName = organisation.organisationName;
     request.email = user.emailAddresses[0].emailAddress;
+    request.isAdmin = organisation.isAdmin ?? false;
   });
 };
 
