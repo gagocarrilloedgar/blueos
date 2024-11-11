@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 import { useCreateOnboarding } from "./useCreateOnboarding";
 
 export function OnboardingForm() {
@@ -106,7 +107,7 @@ export function OnboardingForm() {
         </Button>*/}
         <FormDescription>
           You can always update this in your{" "}
-          <Link className="text-blue-500 underline" href="/settings">
+          <Link className="text-blue-500 underline" to="/settings">
             workspace settings
           </Link>
         </FormDescription>
