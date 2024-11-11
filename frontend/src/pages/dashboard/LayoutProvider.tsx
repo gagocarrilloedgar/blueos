@@ -20,7 +20,7 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
       name: string;
       url: string;
     }[]
-  >(new Array(1).fill({ id: 1, name: "general", url: "/general" }));
+  >(new Array(1).fill({ id: 1, name: "general", url: "/chats/general" }));
 
   const { data: projects } = useQuery({
     queryKey: ["projects"],

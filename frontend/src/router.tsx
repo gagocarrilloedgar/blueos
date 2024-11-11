@@ -1,9 +1,11 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { AccountsList } from "./pages/accounts/AccountList";
 import { Login, SignUp } from "./pages/auth";
+import { General } from "./pages/chats";
 import { EditProject } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
 import { ConfirmAccount } from "./pages/invite/ConfirmAccount";
+import { Notifications } from "./pages/notifications";
 import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
 import ProjectsList from "./pages/projects/ProjectsList/ProjectsList";
@@ -44,8 +46,26 @@ export const router = createBrowserRouter([
         ]
       },
       {
+        path: "/notifications",
+        element: <Notifications />
+      },
+      {
         path: "/accounts",
         element: <AccountsList />
+      },
+      {
+        path: "/chats",
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/chats/general" replace />
+          },
+          {
+            path: "/chats/general",
+            element: <General />
+          }
+        ]
       },
       {
         path: "/projects",

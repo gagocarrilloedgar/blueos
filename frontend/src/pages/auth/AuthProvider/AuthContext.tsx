@@ -5,6 +5,7 @@ export interface Account {
   name: string;
   initials: string;
   email: string;
+  isAdmin: boolean;
   organisation: {
     id: number;
     name: string;

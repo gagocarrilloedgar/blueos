@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       name: account.name,
       initials: getInitials(account.name),
       email: account.email,
+      isAdmin: account.isAdmin,
       organisation: {
         id: account?.organisation.id,
         name: account?.organisation.name

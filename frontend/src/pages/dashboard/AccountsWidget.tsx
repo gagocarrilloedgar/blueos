@@ -23,6 +23,7 @@ import { ArrowUpRight, Trash } from "lucide-react";
 import { PropsWithChildren, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useRemoveAccount } from "../accounts/useRemoveAccount";
 import { useAuth } from "../auth/AuthProvider";
 import { useDashboard } from "./DashboardProvider/useDashboard";
 
@@ -30,6 +31,7 @@ export const AccountsWidget = () => {
   const { accounts, loading } = useDashboard();
   const { account } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
+  const { deleteAccount } = useRemoveAccount();
 
   const actionLabel = "Create";
   const title = "Organisation members";
@@ -83,7 +85,7 @@ export const AccountsWidget = () => {
   const isEmpty = !accounts?.length;
 
   const canDeleteAccount = (accountName: string) => {
-    return accountName !== account?.name;
+    return accountName !== account?.name && account?.isAdmin;
   };
 
   const navigate = useNavigate();
@@ -122,7 +124,7 @@ export const AccountsWidget = () => {
           </section>
         )}
         <section className="flex flex-col pb-4 gap-2">
-          {accounts?.map(({ name, avatar, createdAt, verified }, index) => {
+          {accounts?.map(({ id, name, avatar, createdAt, verified }, index) => {
             return (
               <Card key={`${name}-${index}`}>
                 <div className="flex flew-row gap-2 px-3 py-2 items-center w-full">
@@ -147,6 +149,7 @@ export const AccountsWidget = () => {
                       <TooltipTrigger>
                         <Button
                           disabled={!canDeleteAccount(name)}
+                          onClick={() => deleteAccount(id)}
                           type="button"
                           size="icon"
                           variant="ghost"
@@ -157,7 +160,7 @@ export const AccountsWidget = () => {
                       <TooltipContent>
                         {canDeleteAccount(name)
                           ? "Remove from the team"
-                          : "Cannot remove yourself"}
+                          : "You cannot remove this account"}
                       </TooltipContent>
                     </Tooltip>
                   </span>

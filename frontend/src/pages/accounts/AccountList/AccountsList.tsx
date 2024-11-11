@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { DataTable } from "@/pages/projects/ProjectsList/DataTable";
 import { getCoreRowModel, Row, useReactTable } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
-import { Account, useColumns } from "./columns";
+import { Account } from "./Account";
+import { useColumns } from "./columns";
 import { useGetAccounts } from "./useGetAccounts";
 
 export const AccountsList = () => {

@@ -4,6 +4,7 @@ import { useDebounce } from "@/lib/useDebounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { PaginationState } from "@tanstack/react-table";
 import { useLayoutContext } from "../../dashboard/useLayoutContext";
+import { Account } from "./Account";
 
 export const useGetAccounts = () => {
   const { activeOrg } = useLayoutContext();
@@ -16,7 +17,11 @@ export const useGetAccounts = () => {
   const debouncedSearch = useDebounce(search ?? "");
   const searchQuery = search ? `&search=${debouncedSearch}` : "";
 
-  const query = useQuery({
+  const query = useQuery<{
+    data: Account[];
+    rowCount: number;
+    pageCount: number;
+  }>({
     queryKey: ["accounts", pagination, debouncedSearch],
     placeholderData: keepPreviousData,
     enabled: !!activeOrg,

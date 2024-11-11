@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-table";
 
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -26,6 +27,10 @@ export function DataTable<TData, TValue>({
   table,
   onRowClick
 }: DataTableProps<TData, TValue>) {
+  const rows = table.getRowModel().rows;
+
+  if (!rows?.length) return <EmptySkeleton />;
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -48,42 +53,42 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row: Row<TData>) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const noCursor =
-                    cell.id.includes("id") || cell.id.includes("actions");
-                  return (
-                    <TableCell
-                      className={noCursor ? "" : "cursor-pointer"}
-                      onClick={() => {
-                        if (!noCursor) onRowClick(row);
-                      }}
-                      key={cell.id}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
+          {table.getRowModel().rows.map((row: Row<TData>) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+            >
+              {row.getVisibleCells().map((cell) => {
+                const noCursor =
+                  cell.id.includes("id") || cell.id.includes("actions");
+                return (
+                  <TableCell
+                    className={noCursor ? "" : "cursor-pointer"}
+                    onClick={() => {
+                      if (!noCursor) onRowClick(row);
+                    }}
+                    key={cell.id}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                );
+              })}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
       <DataTablePagination table={table} />
     </div>
   );
 }
+
+const EmptySkeleton = () => {
+  const cols = new Array(10).fill(0);
+  return (
+    <span className="flex flex-col gap-2">
+      {cols.map((val) => (
+        <Skeleton key={val} className="w-full h-10" />
+      ))}
+    </span>
+  );
+};
