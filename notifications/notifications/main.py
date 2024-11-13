@@ -2,11 +2,25 @@
 Main module for the Notifications Service
 """
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from notifications.api.v1.router import api_router
 from notifications.config.settings import settings
+from notifications.db.prisma import db as prisma
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """
+    FastAPI lifespan for Prisma client
+    """
+
+    await prisma.connect()
+    yield
+    await prisma.disconnect()
 
 
 def create_app() -> FastAPI:
@@ -15,6 +29,7 @@ def create_app() -> FastAPI:
         title=settings.PROJECT_NAME,
         version=settings.VERSION,
         description=settings.DESCRIPTION,
+        lifespan=lifespan,
     )
 
     # Configure CORS

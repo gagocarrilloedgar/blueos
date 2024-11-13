@@ -9,3 +9,7 @@ Select the .venv in the project folder
 - Copy the full path of the .venv folder
 - Look for `Python: Select Interpreter`
 - Paste the path and select it
+
+## Migrations
+prisma migrate dev --name <name>
+prisma generate
