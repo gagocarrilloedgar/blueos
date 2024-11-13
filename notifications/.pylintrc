@@ -1,0 +1,20 @@
+[MASTER]
+# Add the project root to Python path
+init-hook='import sys; from pathlib import Path; sys.path.append(str(Path(__file__).parent))'
+
+# Ignore virtual environment
+ignore-paths=.venv
+
+[MESSAGES CONTROL]
+# Disable specific messages
+disable=C0111,  # missing-docstring
+        C0103,  # invalid-name
+        C0303,  # trailing-whitespace
+        W0511,  # fixme
+        E0401   # import-error
+
+[FORMAT]
+max-line-length=120
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,id,db

@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "notifications"
+version = "0.1.0"
+description = ""
+authors = ["gagocarrilloedgar <edgargc.upc@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+start = "notifications.scripts.cli:start"
+start-prod = "notifications.scripts.cli:start_prod"
+dev = "notifications.scripts.cli:dev"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.5"
+uvicorn = "^0.32.0"
+prisma = "^0.15.0"
+pydantic-settings = "^2.6.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

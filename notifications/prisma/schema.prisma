@@ -1,0 +1,89 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    recursive_type_depth = 5
+}
+
+enum NotificationType {
+    EMAIL
+    SMS
+    PUSH
+    APP
+}
+
+enum NotificationStatus {
+    PENDING
+    SENT
+    FAILED
+    CANCELLED
+}
+
+enum NotificationPriority {
+    LOW
+    MEDIUM
+    HIGH
+}
+
+enum NotificationRecipientType {
+    USER
+    GROUP
+}
+
+model Notification {
+    id        String               @id @default(cuid())
+    createdAt DateTime             @default(now())
+    updatedAt DateTime             @updatedAt
+    status    NotificationStatus   @default(PENDING)
+    priority  NotificationPriority @default(MEDIUM)
+
+    configurationId   String
+    configurationType NotificationType
+
+    sendAt     DateTime?
+    recipients NotificationRecipient[]
+
+    organizationId Int
+    clientId       Int?
+
+    EmailConfiguration EmailConfiguration? @relation("EmailConfiguration", fields: [configurationId], references: [id], map: "email_config")
+    AppConfiguration   AppConfiguration?   @relation("AppConfiguration", fields: [configurationId], references: [id], map: "app_config")
+
+    @@index([configurationId, configurationType])
+}
+
+model NotificationRecipient {
+    id        String                    @id @default(cuid())
+    type      NotificationRecipientType
+    createdAt DateTime                  @default(now())
+    updatedAt DateTime                  @updatedAt
+
+    notificationId String
+    notification   Notification @relation(fields: [notificationId], references: [id])
+
+    @@index([notificationId])
+}
+
+model EmailConfiguration {
+    id            String         @id @default(cuid())
+    subject       String
+    body          String
+    metadata      Json?
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    notifications Notification[] @relation("EmailConfiguration")
+}
+
+model AppConfiguration {
+    id        String   @id @default(cuid())
+    subject   String
+    content   String
+    metadata  Json?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    notifications Notification[] @relation("AppConfiguration")
+}
