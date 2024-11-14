@@ -1,4 +1,5 @@
 import { Loader } from "@/components/ui/loader";
+import { env } from "@/config/env";
 import { ClerkProvider, useAuth, useSignUp } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -7,9 +8,7 @@ import { useAuth as useAccountAuth } from "./auth/AuthProvider/useAuth";
 import Layout from "./dashboard/Dashboard";
 import { LayoutProvider } from "./dashboard/LayoutProvider";
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-if (!PUBLISHABLE_KEY) {
+if (!env.clerkPublishableKey) {
   throw new Error("Missing Publishable Key");
 }
 
@@ -22,7 +21,7 @@ export default function RootLayout() {
       routerReplace={(to) => {
         window.location.href = to;
       }}
-      publishableKey={PUBLISHABLE_KEY}
+      publishableKey={env.clerkPublishableKey}
     >
       <AuthProvider>
         <LayoutProvider>
