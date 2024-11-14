@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { env } from "@/config/env";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -8,13 +9,10 @@ export const useRemoveAccount = () => {
     mutationFn: async (accountId: number) => {
       const loadingToast = toast.loading("Deleting account...");
 
-      const res = await fetch(
-        `http://localhost:3000/api/v1/accounts/${accountId}`,
-        {
-          method: "DELETE",
-          credentials: "include"
-        }
-      );
+      const res = await fetch(`${env.apiUrl}/accounts/${accountId}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
 
       toast.dismiss(loadingToast);
 

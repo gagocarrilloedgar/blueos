@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -27,7 +28,7 @@ export const OnboardingProvider = ({ children }: PropsWithChildren) => {
 
   const { mutate } = useMutation({
     mutationFn: async (data: { name: string; organisationName: string }) => {
-      const res = fetch("http://localhost:3000/api/v1/accounts-onboarding", {
+      const res = fetch(`${env.apiUrl}/accounts-onboarding`, {
         method: "POST",
         credentials: "include",
         headers: {

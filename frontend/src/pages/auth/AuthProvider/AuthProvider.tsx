@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useState
-} from "react";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 
+import { env } from "@/config/env";
 import { getInitials } from "@/lib/getInitials";
 import { useClerk } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
@@ -25,12 +21,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   });
 
   const initSession = async () => {
-    const newAccount = await fetch(
-      "http://localhost:3000/api/v1/accounts/session",
-      {
-        credentials: "include"
-      }
-    );
+    const newAccount = await fetch(`${env.apiUrl}/accounts/session`, {
+      credentials: "include"
+    });
 
     const data = await newAccount.json();
     const account = data.data;

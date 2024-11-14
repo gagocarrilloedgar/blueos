@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { env } from "@/config/env";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -67,10 +68,8 @@ const EditProjectForm = () => {
 
   const { isPending, mutate: updateProject } = useMutation({
     mutationFn: async (data: z.infer<typeof ProjecSchema>) => {
-      const fetchPromise = fetch(
-        `http://localhost:3000/api/v1/projects/${projectId}`,
-        {
-          credentials: "include",
+      const fetchPromise = fetch(`${env.apiUrl}/projects/${projectId}`, {
+        credentials: "include",
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
@@ -97,7 +96,7 @@ const EditProjectForm = () => {
   const { data, isLoading } = useQuery<Project>({
     queryKey: ["projects", projectId && parseInt(projectId, 10)],
     queryFn: () =>
-      fetch(`http://localhost:3000/api/v1/projects/${projectId}`, {
+      fetch(`${env.apiUrl}/projects/${projectId}`, {
         credentials: "include"
       }).then((res) => res.json()),
     enabled: !!projectId
@@ -106,10 +105,8 @@ const EditProjectForm = () => {
   const { data: clients } = useQuery<Client[]>({
     queryKey: ["clients", activeOrg?.id],
     queryFn: () =>
-      fetch(
-        `http://localhost:3000/api/v1/clients/organisation/${activeOrg?.id}`,
-        {
-          credentials: "include"
+      fetch(`${env.apiUrl}/clients/organisation/${activeOrg?.id}`, {
+        credentials: "include"
         }
       ).then((res) => res.json()),
     enabled: !!activeOrg?.id
@@ -270,7 +267,7 @@ const CreateNewClient = ({
 
   const clientMutation = useMutation({
     mutationFn: async (data: { name: string; organisationId: number }) => {
-      const fetchPromise = fetch(`http://localhost:3000/api/v1/clients`, {
+      const fetchPromise = fetch(`${env.apiUrl}/clients`, {
         credentials: "include",
         method: "POST",
         headers: {

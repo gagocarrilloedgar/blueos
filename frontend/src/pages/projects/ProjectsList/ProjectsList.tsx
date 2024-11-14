@@ -1,5 +1,6 @@
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Input } from "@/components/ui/input";
+import { env } from "@/config/env";
 import { useDebounce } from "@/lib/useDebounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
@@ -34,7 +35,7 @@ export default function ProjectsList() {
     placeholderData: keepPreviousData,
     queryFn: () =>
       fetch(
-        `http://localhost:3000/api/v1/projects/overview?page=${pagination.pageIndex}&limit=${pagination.pageSize}${searchQuery}`,
+        `${env.apiUrl}/projects/overview?page=${pagination.pageIndex}&limit=${pagination.pageSize}${searchQuery}`,
         {
           credentials: "include"
         }

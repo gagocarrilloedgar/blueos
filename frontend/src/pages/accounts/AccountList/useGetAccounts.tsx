@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { env } from "@/config/env";
 import { useDebounce } from "@/lib/useDebounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { PaginationState } from "@tanstack/react-table";
@@ -27,7 +28,7 @@ export const useGetAccounts = () => {
     enabled: !!activeOrg,
     queryFn: async () => {
       return fetch(
-        `http://localhost:3000/api/v1/accounts/organizations/${activeOrg?.id}?page=${pagination.pageIndex}&limit=${pagination.pageSize}${searchQuery}`,
+        `${env.apiUrl}/accounts/organizations/${activeOrg?.id}?page=${pagination.pageIndex}&limit=${pagination.pageSize}${searchQuery}`,
         {
           credentials: "include"
         }

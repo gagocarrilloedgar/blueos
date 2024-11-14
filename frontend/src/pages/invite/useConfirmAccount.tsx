@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { useUser } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -29,17 +30,14 @@ export const useConfirmAccount = () => {
     mutationFn: async (data: { name: string; userId: string }) => {
       const toastLoading = toast.loading("Confirming account...");
 
-      const mutatate = await fetch(
-        "http://localhost:3000/api/v1/accounts/confirm",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify(data)
-        }
-      );
+      const mutatate = await fetch(`${env.apiUrl}/accounts/confirm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      });
 
       if (mutatate.ok) {
         toast.dismiss(toastLoading);

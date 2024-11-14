@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { env } from "@/config/env";
 import { getInitials } from "@/lib/getInitials";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
@@ -30,7 +31,7 @@ export const DashboardProvider = ({ children }: PropsWithChildren) => {
     queryKey: ["projects", "dashboard"],
     queryFn: async () => {
       setLoading(true);
-      return fetch(`http://localhost:3000/api/v1/projects`, {
+      return fetch(`${env.apiUrl}/projects`, {
         credentials: "include"
       }).then(async (res) => {
         const json = await res.json();
@@ -41,12 +42,9 @@ export const DashboardProvider = ({ children }: PropsWithChildren) => {
   const { data: accounts } = useQuery<TeamAccount[]>({
     queryKey: ["accounts", "dashboard"],
     queryFn: async () => {
-      return fetch(
-        `http://localhost:3000/api/v1/organizations/accounts/${activeOrg?.id}`,
-        {
-          credentials: "include"
-        }
-      ).then(async (res) => {
+      return fetch(`${env.apiUrl}/organizations/accounts/${activeOrg?.id}`, {
+        credentials: "include"
+      }).then(async (res) => {
         const json = await res.json();
         return json?.data?.map((account: TeamAccount) => ({
           ...account,
@@ -68,7 +66,7 @@ export const DashboardProvider = ({ children }: PropsWithChildren) => {
         return;
       }
 
-      const resp = await fetch("http://localhost:3000/api/v1/projects", {
+      const resp = await fetch(`${env.apiUrl}/projects`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -95,7 +93,7 @@ export const DashboardProvider = ({ children }: PropsWithChildren) => {
   );
 
   const confirmDelete = useCallback(async (projectId: number) => {
-    const resp = fetch(`http://localhost:3000/api/v1/projects/${projectId}`, {
+    const resp = fetch(`${env.apiUrl}/projects/${projectId}`, {
       method: "DELETE",
       credentials: "include"
     });

@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { useQuery } from "@tanstack/react-query";
 import {
   PropsWithChildren,
@@ -30,7 +31,7 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
 
   const fetchProjects = async (organisationId: number) => {
     const data = await fetch(
-      `http://localhost:3000/api/v1/projects?organisationId=${organisationId}`,
+      `${env.apiUrl}/projects?organisationId=${organisationId}`,
       {
         credentials: "include"
       }
@@ -48,7 +49,7 @@ export const LayoutProvider = ({ children }: PropsWithChildren) => {
   const fetchInitialData = useCallback(async () => {
     if (!account) return;
     const data = await fetch(
-      `http://localhost:3000/api/v1/organizations/account/${account.id}`,
+      `${env.apiUrl}/organizations/account/${account.id}`,
       {
         credentials: "include"
       }

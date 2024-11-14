@@ -17,6 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+import { env } from "@/config/env";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, Trash } from "lucide-react";
@@ -42,11 +43,9 @@ export const AccountsWidget = () => {
 
   const { mutate: inviteUser } = useMutation({
     mutationFn: async (email: string) => {
-      const fetchPromise = fetch(
-        `http://localhost:3000/api/v1/accounts/invite`,
-        {
-          method: "POST",
-          credentials: "include",
+      const fetchPromise = fetch(`${env.apiUrl}/accounts/invite`, {
+        method: "POST",
+        credentials: "include",
           headers: {
             "Content-Type": "application/json"
           },
