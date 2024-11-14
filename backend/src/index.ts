@@ -27,7 +27,8 @@ fastify.register(authorise);
 
 fastify.register(AutoLoad, {
   dir: path.join(__dirname, "routes"),
-  options: { prefix: "/api/v1" }
+  options: { prefix: "/api/v1" },
+  maxDepth: 5
 });
 
 // Start the server

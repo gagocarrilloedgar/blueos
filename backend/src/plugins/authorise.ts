@@ -2,6 +2,7 @@ import { clerkClient, clerkPlugin, getAuth } from "@clerk/fastify";
 import { eq, or } from "drizzle-orm";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
+
 import { db } from "../db";
 import {
   accountsTable,
@@ -11,12 +12,15 @@ import {
 
 const routePrefix = "/api/v1";
 const skipAccountValidationRoutes = ["/accounts-onboarding"];
+const skipAuth = ["/accounts/test", "/status"];
 
 const authorise = (fastify: FastifyInstance) => {
   fastify.register(clerkPlugin);
 
   fastify.addHook("preHandler", async (request, reply) => {
     const pathWithoutPrefix = request.url.replace(routePrefix, "");
+
+    if (skipAuth.includes(pathWithoutPrefix)) return;
 
     const { userId } = getAuth(request);
 
