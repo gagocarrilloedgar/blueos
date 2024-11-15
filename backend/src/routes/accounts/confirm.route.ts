@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 
 import confirmAcccount, {
   confirmAccountSchema
-} from "../../controller/accounts/confirmAcccount";
+} from "@/controller/accounts/confirmAcccount";
 
 export default async (fastify: FastifyInstance) => {
   fastify.route({
