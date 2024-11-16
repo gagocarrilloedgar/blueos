@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { SlidePanel } from "@/components/ui/side-panel";
 import { env } from "@/config/env";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -54,14 +55,16 @@ type Project = z.infer<typeof ProjecSchema> & {
 };
 
 export const EditProject = () => {
+  const navigate = useNavigate();
+  const goBack = () => navigate("/projects");
   return (
-    <EditProjectLayout>
+    <SlidePanel open={true} onClose={goBack}>
       <EditProjectForm />
-    </EditProjectLayout>
+    </SlidePanel>
   );
 };
 
-const EditProjectForm = () => {
+export const EditProjectForm = () => {
   const { projectId } = useParams();
   const { activeOrg } = useLayoutContext();
   const [showCreateClient, setShowCreateClient] = useState(false);
@@ -70,16 +73,15 @@ const EditProjectForm = () => {
     mutationFn: async (data: z.infer<typeof ProjecSchema>) => {
       const fetchPromise = fetch(`${env.apiUrl}/projects/${projectId}`, {
         credentials: "include",
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            id: Number(projectId),
-            ...data
-          })
-        }
-      );
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: Number(projectId),
+          ...data
+        })
+      });
 
       return toast.promise(fetchPromise, {
         loading: "Updating project...",
@@ -107,8 +109,7 @@ const EditProjectForm = () => {
     queryFn: () =>
       fetch(`${env.apiUrl}/clients/organisation/${activeOrg?.id}`, {
         credentials: "include"
-        }
-      ).then((res) => res.json()),
+      }).then((res) => res.json()),
     enabled: !!activeOrg?.id
   });
 
@@ -339,7 +340,7 @@ const CreateNewClient = ({
   );
 };
 
-const EditProjectLayout = ({ children }: { children: React.ReactNode }) => {
+export const EditProjectSheet = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
 
@@ -352,7 +353,7 @@ const EditProjectLayout = ({ children }: { children: React.ReactNode }) => {
             Change the main details of your project here.
           </SheetDescription>
         </SheetHeader>
-        {children}
+        <EditProjectForm />
       </SheetContent>
     </Sheet>
   );

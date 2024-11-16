@@ -3,7 +3,10 @@ import { AccountsList } from "./pages/accounts/AccountList";
 import { Settings } from "./pages/accounts/Settings";
 import { Login, SignUp } from "./pages/auth";
 import { General } from "./pages/chats";
-import { EditProject } from "./pages/dashboard/EditProject/EditProject";
+import {
+  EditProject,
+  EditProjectSheet
+} from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
 import { ConfirmAccount } from "./pages/invite/ConfirmAccount";
 import { Notifications } from "./pages/notifications";
@@ -44,7 +47,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/edit-project/:projectId",
-            element: <EditProject />
+            element: <EditProjectSheet />
           }
         ]
       },

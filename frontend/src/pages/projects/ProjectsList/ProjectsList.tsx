@@ -10,7 +10,7 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Project, useColumns } from "./columns";
 import { DataTable } from "./DataTable";
 
@@ -65,8 +65,13 @@ export default function ProjectsList() {
     navigate(`/projects/${row.original?.id}/details`);
   };
 
+  const isDetailsRoute = useLocation().pathname.includes("/details");
+
   return (
-    <div className="container mx-auto">
+    <div
+      className="mx-auto transition-all duration-300"
+      style={{ marginRight: isDetailsRoute ? "33.5%" : "0" }}
+    >
       <div className="flex flex-col gap-4">
         <div className="flex">
           <Input
