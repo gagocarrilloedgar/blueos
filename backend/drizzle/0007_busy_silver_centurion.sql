@@ -1,0 +1,1 @@
+ALTER TABLE "folders" ALTER COLUMN "organisation_id" SET NOT NULL;

@@ -33,7 +33,7 @@ export default async (fastify: FastifyInstance) => {
 
   fastify.route({
     method: "DELETE",
-    url: "/:accountId",
+    url: "/accounts/:accountId",
     schema: {
       params: deleteAccountSchema
     },
@@ -42,7 +42,7 @@ export default async (fastify: FastifyInstance) => {
 
   fastify.route({
     method: "POST",
-    url: "/invite",
+    url: "/accounts/invite",
     schema: {
       body: inviteUserSchema
     },
@@ -70,7 +70,7 @@ export default async (fastify: FastifyInstance) => {
 
   fastify.route({
     method: "GET",
-    url: "/session",
+    url: "/accounts/session",
     handler: session
   });
 };
