@@ -1,7 +1,7 @@
 import tasks, { taskTableQueryString } from "@/controller/tasks/tasks";
 import { FastifyInstance } from "fastify";
 
-export const tasksRouters = (fastify: FastifyInstance) => {
+export default function (fastify: FastifyInstance) {
   fastify.route({
     method: "GET",
     url: "/tasks",
@@ -10,4 +10,4 @@ export const tasksRouters = (fastify: FastifyInstance) => {
     },
     handler: tasks
   });
-};
+}

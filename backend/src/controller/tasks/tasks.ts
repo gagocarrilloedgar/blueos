@@ -1,4 +1,4 @@
-import { and, count, eq, SQL } from "drizzle-orm";
+import { and, count, eq, like, SQL } from "drizzle-orm";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
@@ -7,6 +7,7 @@ import { tasksTable } from "@/db/schema/tasks";
 
 export const taskTableQueryString = z.object({
   projectId: z.coerce.number().optional(),
+  search: z.string().optional(),
   folderId: z.coerce.number().optional(),
   page: z.coerce.number().optional().default(0),
   limit: z.coerce.number().optional().default(15)
@@ -20,7 +21,7 @@ export default async function tasks(
 ) {
   const { organisationId } = request;
 
-  const { page, limit, projectId, folderId } = request.query;
+  const { page, limit, projectId, folderId, search } = request.query;
 
   const queryConditions = [
     eq(tasksTable.organisationId, organisationId),
@@ -41,6 +42,8 @@ export default async function tasks(
     columns: {
       id: true,
       name: true,
+      status: true,
+      priority: true,
       description: true,
       createdAt: true
     },
@@ -59,13 +62,24 @@ export default async function tasks(
         }
       }
     },
-    where: query
+    where: (task) => {
+      if (search) return and(query, like(task.name, `%${search}%`));
+
+      return query;
+    }
   });
 
   const [tasks, counts] = await Promise.all([tasksPromise, countsPromise]);
 
   return reply.status(200).send({
-    data: tasks,
+    data: tasks.map((task) => ({
+      ...task,
+      createdAt: task.createdAt?.toLocaleDateString(),
+      assignees: task.assignees.map((assignee) => ({
+        id: assignee.account?.id,
+        name: assignee.account?.name
+      }))
+    })),
     rowCount: counts[0].count,
     pageCount: Math.ceil(counts[0].count / limit)
   });
