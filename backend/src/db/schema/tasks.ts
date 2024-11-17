@@ -1,19 +1,19 @@
 import { relations, sql } from "drizzle-orm";
 import {
-    integer,
-    pgEnum,
-    pgTable,
-    text,
-    timestamp,
-    varchar
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  varchar
 } from "drizzle-orm/pg-core";
 
 import { foldersTable } from "./folders";
 import {
-    accountsTable,
-    clientsTable,
-    organisationsTable,
-    projectsTable
+  accountsTable,
+  clientsTable,
+  organisationsTable,
+  projectsTable
 } from "./main";
 
 export const taskStatus = [
@@ -115,6 +115,10 @@ export const taskAssigneesRelations = relations(
     task: one(tasksTable, {
       fields: [taskAssigneesTable.taskId],
       references: [tasksTable.id]
+    }),
+    account: one(accountsTable, {
+      fields: [taskAssigneesTable.accountId],
+      references: [accountsTable.id]
     })
   })
 );
