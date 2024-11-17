@@ -68,8 +68,6 @@ const Breadcrumbs = () => {
       };
     });
 
-  console.log({ breadcrumbs });
-
   if (pathname === "/" && account)
     return (
       <div className="flex items-center gap-2">

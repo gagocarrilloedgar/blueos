@@ -19,6 +19,8 @@ import RootLayout from "./pages/RootLayout";
 
 import { QueryClient } from "@tanstack/react-query";
 import { projectBreadcrumbLoader } from "./pages/projects/projectBreadcrumbLoader";
+import { ProjectFolder } from "./pages/projects/ProjectFolder";
+import { ProjectHome } from "./pages/projects/ProjectHome";
 import { Project } from "./pages/projects/ProjectsList/columns";
 
 const queryClient = new QueryClient();
@@ -192,7 +194,25 @@ export const router = createBrowserRouter([
                 href: `/projects/${params.projectId}`
               })
             },
-            element: <>Test</>
+            children: [
+              {
+                index: true,
+                element: <ProjectHome />
+              },
+              {
+                path: "/projects/:projectId/folders/:folderId",
+                handle: {
+                  crumb: (
+                    data: Project,
+                    params: { projectId: string; folderId: string }
+                  ) => ({
+                    label: data?.name ?? "Folder",
+                    href: `/projects/${params.projectId}/folders/${params.folderId}`
+                  })
+                },
+                element: <ProjectFolder />
+              }
+            ]
           }
         ]
       }
