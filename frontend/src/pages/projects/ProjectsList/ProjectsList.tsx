@@ -1,3 +1,4 @@
+import { DataTable } from "@/components/ui/data-table";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Input } from "@/components/ui/input";
 import { env } from "@/config/env";
@@ -12,7 +13,6 @@ import {
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Project, useColumns } from "./columns";
-import { DataTable } from "./DataTable";
 
 export default function ProjectsList() {
   const columns = useColumns();
@@ -52,6 +52,9 @@ export default function ProjectsList() {
   const table = useReactTable({
     data: queryData.data?.rows ?? [],
     columns,
+    meta: {
+      loading: queryData.isLoading
+    },
     rowCount: queryData?.data?.rowCount,
     state: {
       pagination

@@ -1,4 +1,3 @@
-
 export const ProjectSection = ({
   title,
   children

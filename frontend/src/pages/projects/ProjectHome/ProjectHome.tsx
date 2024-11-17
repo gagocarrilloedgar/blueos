@@ -4,6 +4,7 @@ import { useFolders } from "./useFolders";
 
 import { FoldersSection } from "@/pages/projects/FolderSection";
 import { ProjectSection } from "@/pages/projects/ProjectSection";
+import { ResourcesTable } from "@/pages/projects/ResourcesTable";
 
 export const ProjectHome = () => {
   const { projectId } = useParams();
@@ -13,7 +14,7 @@ export const ProjectHome = () => {
       <ProjectHeader />
       <FoldersSection isLoading={isLoading} data={data?.data ?? []} />
       <ProjectSection title="Files, tasks and more">
-        <div className="flex flex-col gap-2">fsdf</div>
+        <ResourcesTable projectId={projectId} />
       </ProjectSection>
     </div>
   );

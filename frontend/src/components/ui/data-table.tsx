@@ -1,35 +1,45 @@
 import {
-  ColumnDef,
-  flexRender,
-  Row,
-  Table as TableType
+    ColumnDef,
+    flexRender,
+    Row,
+    RowData,
+    Table as TableType
 } from "@tanstack/react-table";
 
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
 } from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
   table: TableType<TData>;
+  columns: ColumnDef<TData, TValue>[];
   onRowClick: (row: Row<TData>) => void;
 }
 
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    loading?: boolean;
+  }
+}
+
 export function DataTable<TData, TValue>({
-  columns,
   table,
+  columns,
   onRowClick
 }: DataTableProps<TData, TValue>) {
   const rows = table.getRowModel().rows;
 
-  if (!rows?.length) return <EmptySkeleton />;
+  const isLoading = table.options.meta?.loading;
+  const isEmpty = !rows.length;
+
+  if (!rows?.length && isLoading) return <EmptySkeleton />;
 
   return (
     <div className="rounded-md border">
@@ -76,11 +86,32 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableBody>
+        <EmptyState isEmpty={isEmpty} colSpan={columns.length} />
       </Table>
       <DataTablePagination table={table} />
     </div>
   );
 }
+
+const EmptyState = ({
+  isEmpty,
+  description = "There's no data ",
+  colSpan
+}: {
+  isEmpty?: boolean;
+  description?: string;
+  colSpan: number;
+}) => {
+  if (!isEmpty) return null;
+
+  return (
+    <TableRow>
+      <TableCell colSpan={colSpan} className="h-24 text-center">
+        {description}
+      </TableCell>
+    </TableRow>
+  );
+};
 
 const EmptySkeleton = () => {
   const cols = new Array(10).fill(0);
