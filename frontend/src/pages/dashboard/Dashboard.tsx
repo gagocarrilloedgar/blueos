@@ -14,7 +14,7 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { Trans } from "@lingui/macro";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function Layout() {
@@ -51,12 +51,24 @@ const SidebarHeader = () => {
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
+  const matches = useMatches();
   const { account } = useAuth();
   const navigate = useNavigate();
 
   const isMorning = new Date().getHours() <= 12;
   const title = isMorning ? "Morning" : "Hello" + " " + account?.name;
-  const breadcrumbs = generateBreadcrumbs(pathname);
+
+  const breadcrumbs = matches
+    .filter((match: any) => match.handle?.crumb)
+    .map((match: any) => {
+      const breadcrumb = match.handle.crumb(match.data, match.params);
+      return {
+        label: breadcrumb?.label || "",
+        href: breadcrumb?.href || match.pathname
+      };
+    });
+
+  console.log({ breadcrumbs });
 
   if (pathname === "/" && account)
     return (
@@ -72,6 +84,7 @@ const Breadcrumbs = () => {
         </span>
       </div>
     );
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
