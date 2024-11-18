@@ -9,12 +9,17 @@ const slidePanelVariants = cva(
   {
     variants: {
       side: {
-        right: "top-0 bottom-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
-        left: "top-0 bottom-0 left-0 h-full w-3/4 border-r sm:max-w-sm"
+        right: "top-0 bottom-0 right-0 h-full w-3/4 border-l",
+        left: "top-0 bottom-0 left-0 h-full w-3/4 border-r"
+      },
+      state: {
+        open: "sm:max-w-sm",
+        closed: "sm:max-w-md"
       }
     },
     defaultVariants: {
-      side: "right"
+      side: "right",
+      state: "open"
     }
   }
 );
@@ -22,18 +27,34 @@ const slidePanelVariants = cva(
 interface SlidePanelProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof slidePanelVariants> {
+  sidebarOpen?: boolean;
   open?: boolean;
   onClose?: () => void;
 }
 
 const SlidePanel = React.forwardRef<HTMLDivElement, SlidePanelProps>(
-  ({ side = "right", className, children, open, onClose, ...props }, ref) => {
+  (
+    {
+      side = "right",
+      state = "open",
+      className,
+      sidebarOpen = false,
+      children,
+      open,
+      onClose,
+      ...props
+    },
+    ref
+  ) => {
+    console.log(sidebarOpen);
     return (
       <motion.div
         ref={ref}
-        className={cn(slidePanelVariants({ side }), className)}
+        className={cn(slidePanelVariants({ side, state }), className)}
         initial={{ x: side === "right" ? "100%" : "-100%" }}
-        animate={{ x: open ? "0" : side === "right" ? "100%" : "-100%" }}
+        animate={{
+          x: open ? "0" : side === "right" ? "100%" : "-100%"
+        }}
         transition={{ duration: 0.2 }}
       >
         <button

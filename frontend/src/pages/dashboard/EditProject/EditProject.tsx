@@ -27,6 +27,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { SlidePanel } from "@/components/ui/side-panel";
+import { useSidebar } from "@/components/ui/sidebar";
 import { env } from "@/config/env";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -57,8 +58,13 @@ type Project = z.infer<typeof ProjecSchema> & {
 export const EditProject = () => {
   const navigate = useNavigate();
   const goBack = () => navigate("/projects");
+  const { open: isSidebarOpen } = useSidebar();
   return (
-    <SlidePanel open={true} onClose={goBack}>
+    <SlidePanel
+      open={true}
+      onClose={goBack}
+      state={isSidebarOpen ? "open" : "closed"}
+    >
       <EditProjectForm />
     </SlidePanel>
   );
