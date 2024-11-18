@@ -1,71 +1,26 @@
-import { and, count, eq, like } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { db } from "../db";
-import { clientsTable, projectsTable } from "../db/schema/main";
+
+import { db } from "@/db";
+import { clientsTable, projectsTable } from "@/db/schema/main";
+
+import projectOverview, {
+  projectsOverviewSchema
+} from "@/controller/projects/projectsOverview";
+
+import createProject, {
+  createProjectSchema
+} from "@/controller/projects/create";
 
 const projecRoutes = (fastify: FastifyInstance) => {
-  const projectsOverviewSchema = z.object({
-    page: z.coerce.number().default(0),
-    limit: z.coerce.number().default(15),
-    search: z.string().optional().nullable()
-  });
-
   fastify.route({
     method: "GET",
     url: "/projects/overview",
     schema: {
       querystring: projectsOverviewSchema
     },
-    handler: async (
-      request: FastifyRequest<{
-        Querystring: z.infer<typeof projectsOverviewSchema>;
-      }>,
-      reply
-    ) => {
-      const { page, limit, search } = request.query;
-      const countsQuery = db
-        .select({ count: count() })
-        .from(projectsTable)
-        .where(eq(projectsTable.organisationId, request.organisationId));
-
-      const projectQuery = db.query.projectsTable.findMany({
-        limit: limit,
-        offset: page * limit,
-        columns: {
-          id: true,
-          name: true,
-          description: true,
-          workedHours: true,
-          createdAt: true
-        },
-        with: {
-          client: {
-            columns: {
-              id: true,
-              name: true
-            }
-          }
-        },
-        where: (project) => {
-          if (search)
-            return and(
-              eq(project.organisationId, request.organisationId),
-              like(project.name, `%${search}%`)
-            );
-
-          return eq(project.organisationId, request.organisationId);
-        }
-      });
-
-      const [projects, counts] = await Promise.all([projectQuery, countsQuery]);
-
-      return reply.send({
-        data: projects,
-        rowCount: counts[0].count,
-        pageCount: Math.ceil(counts[0].count / limit)
-      });
-    }
+    handler: projectOverview
   });
 
   const projectsSchema = z.object({
@@ -144,35 +99,6 @@ const projecRoutes = (fastify: FastifyInstance) => {
     }
   });
 
-  const createProjectSchema = z.object({
-    name: z.string(),
-    organisationId: z.number()
-  });
-
-  fastify.route({
-    method: "POST",
-    url: "/projects",
-    schema: {
-      body: createProjectSchema
-    },
-    handler: async (
-      request: FastifyRequest<{ Body: z.infer<typeof createProjectSchema> }>,
-      reply
-    ) => {
-      const { name, organisationId } = request.body;
-
-      if (Number(organisationId) !== request.organisationId)
-        return reply.status(422).send({ message: "Malformed request" });
-
-      await db.insert(projectsTable).values({
-        name,
-        organisationId: request.organisationId
-      });
-
-      return reply.status(201).send();
-    }
-  });
-
   // Delete project
   const deleteProjectSchema = z.object({
     projectId: z.string().transform((val) => parseInt(val, 10))
@@ -201,6 +127,16 @@ const projecRoutes = (fastify: FastifyInstance) => {
 
       return reply.status(204).send();
     }
+  });
+
+  // Create project
+  fastify.route({
+    method: "POST",
+    url: "/projects",
+    schema: {
+      body: createProjectSchema
+    },
+    handler: createProject
   });
 
   // Update project
@@ -250,7 +186,7 @@ const projecRoutes = (fastify: FastifyInstance) => {
           )
         );
 
-      return reply.status(204).send();
+      return reply.status(200).send();
     }
   });
 };
