@@ -3,10 +3,7 @@ import { AccountsList } from "./pages/accounts/AccountList";
 import { Settings } from "./pages/accounts/Settings";
 import { Login, SignUp } from "./pages/auth";
 import { General } from "./pages/chats";
-import {
-  EditProject,
-  EditProjectSheet
-} from "./pages/dashboard/EditProject/EditProject";
+import { EditProjectSheet } from "./pages/dashboard/EditProject/EditProject";
 import DashboardLayout from "./pages/DashboardLayout";
 import { ConfirmAccount } from "./pages/invite/ConfirmAccount";
 import { Notifications } from "./pages/notifications";
@@ -14,14 +11,17 @@ import { Onboarding } from "./pages/onboarding/Onboarding";
 import { OnboardingProvider } from "./pages/onboarding/OnboardingProvider";
 import { Documents } from "./pages/private/documents";
 import { Tasks } from "./pages/private/tasks";
+import { EditProject } from "./pages/projects/EditProject";
 import ProjectsList from "./pages/projects/ProjectsList/ProjectsList";
 import RootLayout from "./pages/RootLayout";
 
 import { QueryClient } from "@tanstack/react-query";
+import { CreateProject } from "./pages/projects/CreateProject/CreateProject";
 import { projectBreadcrumbLoader } from "./pages/projects/projectBreadcrumbLoader";
 import { ProjectFolder } from "./pages/projects/ProjectFolder";
 import { ProjectHome } from "./pages/projects/ProjectHome";
 import { Project } from "./pages/projects/ProjectsList/columns";
+import { ProjectListAction } from "./pages/projects/ProjectsList/ProjectList.actions";
 
 const queryClient = new QueryClient();
 
@@ -162,12 +162,22 @@ export const router = createBrowserRouter([
           crumb: () => ({
             label: "Projects",
             href: "/projects"
-          })
+          }),
+          action: <ProjectListAction />
         },
         children: [
           {
             index: true,
             element: <ProjectsList />
+          },
+          {
+            path: "/projects/new",
+            element: (
+              <>
+                <ProjectsList compress />
+                <CreateProject />
+              </>
+            )
           },
           {
             path: "/projects/:projectId/details",
@@ -181,7 +191,7 @@ export const router = createBrowserRouter([
             },
             element: (
               <>
-                <ProjectsList />
+                <ProjectsList compress />
                 <EditProject />
               </>
             )

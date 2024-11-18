@@ -27,30 +27,23 @@ const slidePanelVariants = cva(
 interface SlidePanelProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof slidePanelVariants> {
-  sidebarOpen?: boolean;
   open?: boolean;
   onClose?: () => void;
 }
 
 const SlidePanel = React.forwardRef<HTMLDivElement, SlidePanelProps>(
   (
-    {
-      side = "right",
-      state = "open",
-      className,
-      sidebarOpen = false,
-      children,
-      open,
-      onClose,
-      ...props
-    },
+    { side = "right", state = "open", className, children, open, onClose },
     ref
   ) => {
-    console.log(sidebarOpen);
     return (
       <motion.div
         ref={ref}
-        className={cn(slidePanelVariants({ side, state }), className)}
+        className={cn(
+          slidePanelVariants({ side, state }),
+          "flex flex-col h-full",
+          className
+        )}
         initial={{ x: side === "right" ? "100%" : "-100%" }}
         animate={{
           x: open ? "0" : side === "right" ? "100%" : "-100%"
@@ -86,6 +79,15 @@ const SlidePanelHeader = ({
 );
 SlidePanelHeader.displayName = "SlidePanelHeader";
 
+const SlidePanelConent = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className="flex flex-col flex-1" {...props} />
+);
+
+SlidePanelConent.displayName = "SlidePanelConent";
+
 const SlidePanelFooter = ({
   className,
   ...props
@@ -100,4 +102,4 @@ const SlidePanelFooter = ({
 );
 SlidePanelFooter.displayName = "SlidePanelFooter";
 
-export { SlidePanel, SlidePanelFooter, SlidePanelHeader };
+export { SlidePanel, SlidePanelConent, SlidePanelFooter, SlidePanelHeader };

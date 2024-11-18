@@ -11,15 +11,19 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Project, useColumns } from "./columns";
 
-export default function ProjectsList() {
+interface ProjectListProps {
+  compress?: boolean;
+}
+
+export default function ProjectsList({ compress }: ProjectListProps) {
   const columns = useColumns();
   const [search, setSearch] = useState<string | null>(null);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 15
+    pageSize: 12
   });
   const navigate = useNavigate();
 
@@ -68,12 +72,10 @@ export default function ProjectsList() {
     navigate(`/projects/${row.original?.id}/details`);
   };
 
-  const isDetailsRoute = useLocation().pathname.includes("/details");
-
   return (
     <div
       className="mx-auto transition-all duration-300"
-      style={{ marginRight: isDetailsRoute ? "33.5%" : "0" }}
+      style={{ marginRight: compress ? "33.5%" : "0" }}
     >
       <div className="flex flex-col gap-4">
         <div className="flex">
