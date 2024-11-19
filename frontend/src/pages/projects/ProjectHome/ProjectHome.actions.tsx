@@ -13,34 +13,45 @@ import {
     Trash,
     UploadCloud
 } from "lucide-react";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { CreateFolderDialog } from "./CreateFolderDialog";
 
 export const ProjectHomeActions = () => {
   const { projectId } = useParams();
+  const [openNewFolder, setOpenNewFolder] = useState(false);
   return (
-    <section className="flex items-center gap-2">
-      <TooltipIconButton label="Edit project" asChild>
-        <Link to={`/projects/${projectId}/edit`}>
-          <Edit className="w-4 h-4" />
-        </Link>
-      </TooltipIconButton>
-      <TooltipIconButton label="Share project">
-        <Share2 className="w-4 h-4" />
-      </TooltipIconButton>
-      <TooltipIconButton label="New folder">
-        <FolderPlusIcon className="w-4 h-4" />
-      </TooltipIconButton>
-      <TooltipIconButton label="New document">
-        <FilePlus className="w-4 h-4" />
-      </TooltipIconButton>
-      <TooltipIconButton label="Upload files">
-        <UploadCloud className="w-4 h-4" />
-      </TooltipIconButton>
-      <TooltipIconButton label="Remove project">
-        <Trash className="w-4 h-4" />
-      </TooltipIconButton>
-    </section>
+    <>
+      <section className="flex items-center gap-2">
+        <TooltipIconButton label="Edit project" asChild>
+          <Link to={`/projects/${projectId}/edit`}>
+            <Edit className="w-4 h-4" />
+          </Link>
+        </TooltipIconButton>
+        <TooltipIconButton label="Share project">
+          <Share2 className="w-4 h-4" />
+        </TooltipIconButton>
+        <TooltipIconButton
+          label="New folder"
+          onClick={() => setOpenNewFolder(true)}
+        >
+          <FolderPlusIcon className="w-4 h-4" />
+        </TooltipIconButton>
+        <TooltipIconButton label="New document">
+          <FilePlus className="w-4 h-4" />
+        </TooltipIconButton>
+        <TooltipIconButton label="Upload files">
+          <UploadCloud className="w-4 h-4" />
+        </TooltipIconButton>
+        <TooltipIconButton label="Remove project">
+          <Trash className="w-4 h-4" />
+        </TooltipIconButton>
+      </section>
+      <CreateFolderDialog
+        open={openNewFolder}
+        onOpenChange={setOpenNewFolder}
+      />
+    </>
   );
 };
 

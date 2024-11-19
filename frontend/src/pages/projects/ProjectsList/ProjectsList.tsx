@@ -13,7 +13,8 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Project, useColumns } from "./columns";
+import { ProjectDetail } from "../types";
+import { useColumns } from "./ProjectList.columns";
 
 interface ProjectListProps {
   compress?: boolean;
@@ -32,7 +33,7 @@ export default function ProjectsList({ compress }: ProjectListProps) {
   const searchQuery = search ? `&search=${debouncedSearch}` : "";
 
   const queryData = useQuery<{
-    rows: Project[];
+    rows: ProjectDetail[];
     rowCount: number;
     pageCount: number;
   }>({
@@ -69,7 +70,7 @@ export default function ProjectsList({ compress }: ProjectListProps) {
     manualPagination: true // "server-side" pagination,
   });
 
-  const navigateToProject = (row: Row<Project>) => {
+  const navigateToProject = (row: Row<ProjectDetail>) => {
     navigate(`/projects/${row.original?.id}/details`);
   };
 

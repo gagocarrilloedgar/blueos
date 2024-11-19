@@ -2,7 +2,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { Params } from "react-router-dom";
 
 import { env } from "@/config";
-import { Project } from "./ProjectsList/columns";
+import { getInitials } from "@/lib/getInitials";
+import { ProjectDetail } from "./types";
 
 export const projectBreadcrumbLoader =
   (params: Params) => async (queryClient: QueryClient) => {
@@ -14,9 +15,9 @@ export const projectBreadcrumbLoader =
         }).then((res) => res.json())
     };
 
-    const data: Project | undefined | null =
+    const data: ProjectDetail | undefined | null =
       (await queryClient.getQueryData(projectNameQuery.queryKey)) ??
       (await queryClient.fetchQuery(projectNameQuery));
 
-    return { name: data?.name };
+    return { ...data, avatar: getInitials(data?.name ?? "") };
   };

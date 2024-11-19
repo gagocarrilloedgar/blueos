@@ -1,35 +1,14 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import { getInitials } from "@/lib/getInitials";
 import { getRandomPastelColor } from "@/lib/getRandomPastelColor";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom";
+import { ArrowUpRight, Trash } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ProjectDetail } from "../types";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Project = {
-  id: number;
-  name: string;
-  description: string;
-  workedHours: number;
-  createdAt: string;
-  client: {
-    id: number;
-    name: string;
-  };
-};
-
-export const useColumns = (): ColumnDef<Project>[] => {
+export const useColumns = (): ColumnDef<ProjectDetail>[] => {
   const navigate = useNavigate();
   return [
     {
@@ -109,29 +88,16 @@ export const useColumns = (): ColumnDef<Project>[] => {
       cell: ({ row }) => {
         const project = row.original;
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <DotsVerticalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigate(`/projects/${project.id}`)}
-              >
-                View project
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => navigate(`/projects/${project.id}/details`)}
-              >
-                View project details
-              </DropdownMenuItem>
-              <DropdownMenuItem>Delete project</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <span className="flex w-min">
+            <Button size="icon" asChild variant="ghost">
+              <Link to={`/projects/${project.id}`}>
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </Button>
+            <Button size="icon" variant="ghost">
+              <Trash className="w-4 h-4" />
+            </Button>
+          </span>
         );
       }
     }

@@ -20,8 +20,8 @@ import { CreateProject } from "./pages/projects/CreateProject/CreateProject";
 import { projectBreadcrumbLoader } from "./pages/projects/projectBreadcrumbLoader";
 import { ProjectFolder } from "./pages/projects/ProjectFolder";
 import { ProjectHome, ProjectHomeActions } from "./pages/projects/ProjectHome";
-import { Project } from "./pages/projects/ProjectsList/columns";
 import { ProjectListAction } from "./pages/projects/ProjectsList/ProjectList.actions";
+import { ProjectDetail } from "./pages/projects/types";
 
 const queryClient = new QueryClient();
 
@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
             loader: ({ params }) =>
               projectBreadcrumbLoader(params)(queryClient),
             handle: {
-              crumb: (data: Project, params: { projectId: string }) => ({
+              crumb: (data: ProjectDetail, params: { projectId: string }) => ({
                 label: `Edit project ${data?.name}`,
                 href: `/edit-project/${params.projectId}`
               })
@@ -184,7 +184,7 @@ export const router = createBrowserRouter([
             loader: ({ params }) =>
               projectBreadcrumbLoader(params)(queryClient),
             handle: {
-              crumb: (data: Project, params: { projectId: string }) => ({
+              crumb: (data: ProjectDetail, params: { projectId: string }) => ({
                 label: data?.name,
                 href: `/projects/${params.projectId}/details`
               })
@@ -201,7 +201,7 @@ export const router = createBrowserRouter([
             loader: ({ params }) =>
               projectBreadcrumbLoader(params)(queryClient),
             handle: {
-              crumb: (data: Project, params: { projectId: string }) => ({
+              crumb: (data: ProjectDetail, params: { projectId: string }) => ({
                 label: data?.name,
                 href: `/projects/${params.projectId}`
               }),
@@ -210,6 +210,8 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
+                loader: ({ params }) =>
+                  projectBreadcrumbLoader(params)(queryClient),
                 element: <ProjectHome />
               },
               {
@@ -225,7 +227,7 @@ export const router = createBrowserRouter([
                 path: "/projects/:projectId/folders/:folderId",
                 handle: {
                   crumb: (
-                    data: Project,
+                    data: ProjectDetail,
                     params: { projectId: string; folderId: string }
                   ) => ({
                     label: data?.name ?? "Folder",
