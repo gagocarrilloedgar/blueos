@@ -19,7 +19,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { CreateProject } from "./pages/projects/CreateProject/CreateProject";
 import { projectBreadcrumbLoader } from "./pages/projects/projectBreadcrumbLoader";
 import { ProjectFolder } from "./pages/projects/ProjectFolder";
-import { ProjectHome } from "./pages/projects/ProjectHome";
+import { ProjectHome, ProjectHomeActions } from "./pages/projects/ProjectHome";
 import { Project } from "./pages/projects/ProjectsList/columns";
 import { ProjectListAction } from "./pages/projects/ProjectsList/ProjectList.actions";
 
@@ -204,12 +204,22 @@ export const router = createBrowserRouter([
               crumb: (data: Project, params: { projectId: string }) => ({
                 label: data?.name,
                 href: `/projects/${params.projectId}`
-              })
+              }),
+              action: <ProjectHomeActions />
             },
             children: [
               {
                 index: true,
                 element: <ProjectHome />
+              },
+              {
+                path: "/projects/:projectId/edit",
+                element: (
+                  <>
+                    <ProjectHome compress />
+                    <EditProject pureNavigateBack />
+                  </>
+                )
               },
               {
                 path: "/projects/:projectId/folders/:folderId",

@@ -2,21 +2,26 @@ import { useParams } from "react-router-dom";
 
 import { useFolders } from "./useFolders";
 
+import { Compress } from "@/components/ui/compress";
 import { FoldersSection } from "@/pages/projects/FolderSection";
 import { ProjectSection } from "@/pages/projects/ProjectSection";
 import { ResourcesTable } from "@/pages/projects/ResourcesTable";
 
-export const ProjectHome = () => {
+interface ProjectHomeProps {
+  compress?: boolean;
+}
+
+export const ProjectHome = ({ compress }: ProjectHomeProps) => {
   const { projectId } = useParams();
   const { data, isLoading } = useFolders(Number(projectId));
   return (
-    <div className="mx-auto">
+    <Compress useCompress={compress}>
       <ProjectHeader />
       <FoldersSection isLoading={isLoading} data={data?.data ?? []} />
       <ProjectSection title="Files, tasks and more">
         <ResourcesTable projectId={projectId} />
       </ProjectSection>
-    </div>
+    </Compress>
   );
 };
 

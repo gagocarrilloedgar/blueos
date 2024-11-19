@@ -1,3 +1,4 @@
+import { Compress } from "@/components/ui/compress";
 import { DataTable } from "@/components/ui/data-table";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { Input } from "@/components/ui/input";
@@ -73,10 +74,7 @@ export default function ProjectsList({ compress }: ProjectListProps) {
   };
 
   return (
-    <div
-      className="mx-auto transition-all duration-300"
-      style={{ marginRight: compress ? "33.5%" : "0" }}
-    >
+    <Compress useCompress={compress}>
       <div className="flex flex-col gap-4">
         <div className="flex">
           <Input
@@ -94,6 +92,6 @@ export default function ProjectsList({ compress }: ProjectListProps) {
           onRowClick={navigateToProject}
         />
       </div>
-    </div>
+    </Compress>
   );
 }
