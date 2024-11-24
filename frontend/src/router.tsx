@@ -17,6 +17,7 @@ import RootLayout from "./pages/RootLayout";
 
 import { QueryClient } from "@tanstack/react-query";
 import { CreateProject } from "./pages/projects/CreateProject/CreateProject";
+import { EditDocument } from "./pages/projects/Document";
 import { projectBreadcrumbLoader } from "./pages/projects/projectBreadcrumbLoader";
 import { ProjectFolder } from "./pages/projects/ProjectFolder";
 import { ProjectHome, ProjectHomeActions } from "./pages/projects/ProjectHome";
@@ -235,6 +236,19 @@ export const router = createBrowserRouter([
                   })
                 },
                 element: <ProjectFolder />
+              },
+              {
+                path: "/projects/:projectId/docs/:documentId",
+                handle: {
+                  crumb: (
+                    data: ProjectDetail,
+                    params: { projectId: string; folderId: string }
+                  ) => ({
+                    label: data?.name ?? "Document",
+                    href: `/projects/${params.projectId}/docs/${params.folderId}`
+                  })
+                },
+                element: <EditDocument />
               }
             ]
           }

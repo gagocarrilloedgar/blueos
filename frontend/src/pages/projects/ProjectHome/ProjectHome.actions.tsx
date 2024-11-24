@@ -1,25 +1,32 @@
 import { Button, ButtonProps } from "@/components/ui/button";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
 } from "@/components/ui/tooltip";
 import { } from "@radix-ui/react-tooltip";
 import {
-    Edit,
-    FilePlus,
-    FolderPlusIcon,
-    Share2,
-    Trash,
-    UploadCloud
+  Edit,
+  FilePlus,
+  FolderPlusIcon,
+  Share2,
+  Trash,
+  UploadCloud
 } from "lucide-react";
 import { PropsWithChildren, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { CreateFolderDialog } from "./CreateFolderDialog";
 
 export const ProjectHomeActions = () => {
   const { projectId } = useParams();
   const [openNewFolder, setOpenNewFolder] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Url copied");
+  };
+
   return (
     <>
       <section className="flex items-center gap-2">
@@ -28,7 +35,7 @@ export const ProjectHomeActions = () => {
             <Edit className="w-4 h-4" />
           </Link>
         </TooltipIconButton>
-        <TooltipIconButton label="Share project">
+        <TooltipIconButton label="Share project" onClick={copyToClipboard}>
           <Share2 className="w-4 h-4" />
         </TooltipIconButton>
         <TooltipIconButton

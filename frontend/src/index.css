@@ -3,6 +3,23 @@
 @tailwind utilities;
 
 @layer base {
+  h1 {
+    @apply text-5xl font-black;
+  }
+  h2 {
+    @apply text-3xl font-extrabold;
+  }
+  h3 {
+    @apply text-xl font-bold;
+  }
+
+  h4 {
+    @apply text-lg font-semibold;
+  }
+  a {
+    @apply text-teal-600 underline;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
