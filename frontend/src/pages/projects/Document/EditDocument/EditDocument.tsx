@@ -16,11 +16,9 @@ import StarterKit from "@tiptap/starter-kit";
 import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
 import "./index.css";
 
-import { Bold, Italic, Underline } from "lucide-react";
+import { Bold, Heading1, Heading2, Italic, Underline } from "lucide-react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
-const content = "fsafsd";
 
 export const EditDocument = () => {
   const editor = useEditor({
@@ -50,8 +48,8 @@ export const EditDocument = () => {
         levels: [1, 2, 3, 4]
       })
     ],
-    content,
-    autofocus: "end"
+    content: undefined,
+    autofocus: "all"
   });
 
   if (!editor) return null; // Ensure editor is loaded before rendering
@@ -84,13 +82,33 @@ export const EditDocument = () => {
           >
             <Underline className="h-4 w-4" />
           </ToggleGroupItem>
+          <ToggleGroupItem
+            value="heading-1"
+            aria-label="Title"
+            onClick={() =>
+              editor.chain().focus().setHeading({ level: 1 }).run()
+            }
+          >
+            <Heading1 className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="heading-2"
+            aria-label="Subtitle"
+            onClick={() =>
+              editor.chain().focus().setHeading({ level: 2 }).run()
+            }
+          >
+            <Heading2 className="h-4 w-4" />
+          </ToggleGroupItem>
         </ToggleGroup>
       </BubbleMenu>
 
       {/* Editor Content */}
       <EditorContent
         editor={editor}
-        className="border p-4 rounded-md editor-conent"
+        placeholder="Enter new title"
+        className="px-2 editor-conent min-h-[80vh]"
+        onClick={() => editor.chain().focus().run()}
       />
     </div>
   );

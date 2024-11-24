@@ -16,9 +16,6 @@
   h4 {
     @apply text-lg font-semibold;
   }
-  a {
-    @apply text-teal-600 underline;
-  }
 
   :root {
     --background: 0 0% 100%;
