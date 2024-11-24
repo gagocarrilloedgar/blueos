@@ -12,7 +12,7 @@ export const useCreateFolder = () => {
     }) => {
       const loadingToast = toast.loading("Deleting account...");
 
-      const res = await fetch(`${env.apiUrl}/projects`, {
+      const res = await fetch(`${env.apiUrl}/folders`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -23,9 +23,9 @@ export const useCreateFolder = () => {
 
       toast.dismiss(loadingToast);
 
-      if (!res.ok) return toast.error("Error creating the project");
+      if (!res.ok) return toast.error("Error creating the Folder");
 
-      toast.success("Project created");
+      toast.success("Folder created");
     }
   });
 

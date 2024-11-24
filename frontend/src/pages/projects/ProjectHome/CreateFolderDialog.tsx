@@ -2,12 +2,12 @@ import { DialogProps } from "@radix-ui/react-dialog";
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +30,6 @@ export const CreateFolderDialog = ({
   const queryClient = useQueryClient();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("test");
     e.preventDefault();
 
     const name = inputRef.current?.value;
@@ -44,7 +43,7 @@ export const CreateFolderDialog = ({
       projectId: Number(projectId)
     });
     queryClient.invalidateQueries({
-      queryKey: ["folders", "project", projectId]
+      queryKey: ["folders", "project", Number(projectId)]
     });
     onOpenChange && onOpenChange(false);
   };
