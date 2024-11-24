@@ -1,7 +1,9 @@
+import createFolder, { createFolderSchema } from "@/controller/folders/create";
 import projectRoot, {
-    projectRootParams,
-    projectRootQueryString
+  projectRootParams,
+  projectRootQueryString
 } from "@/controller/folders/projectRoot";
+
 import { FastifyInstance } from "fastify";
 
 export default async function (fastify: FastifyInstance) {
@@ -13,5 +15,14 @@ export default async function (fastify: FastifyInstance) {
       querystring: projectRootQueryString
     },
     handler: projectRoot
+  });
+
+  fastify.route({
+    method: "POST",
+    url: "/folders",
+    schema: {
+      body: createFolderSchema
+    },
+    handler: createFolder
   });
 }
