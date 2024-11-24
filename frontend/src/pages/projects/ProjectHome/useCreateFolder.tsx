@@ -10,7 +10,7 @@ export const useCreateFolder = () => {
       name: string;
       projectId: number;
     }) => {
-      const loadingToast = toast.loading("Deleting account...");
+      const loadingToast = toast.loading("Creating folder...");
 
       const res = await fetch(`${env.apiUrl}/folders`, {
         method: "POST",

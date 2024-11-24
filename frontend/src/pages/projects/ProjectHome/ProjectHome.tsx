@@ -3,9 +3,9 @@ import { useLoaderData, useParams } from "react-router-dom";
 import { useFolders } from "./useFolders";
 
 import { Compress } from "@/components/ui/compress";
-import { FoldersSection } from "@/pages/projects/FolderSection";
 import { ProjectSection } from "@/pages/projects/ProjectSection";
 import { ResourcesTable } from "@/pages/projects/ResourcesTable";
+import { FoldersSection } from "../FolderSection";
 import { ProjectDetail } from "../types";
 
 interface ProjectHomeProps {

@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+
 import { FoldersSection } from "../FolderSection";
 import { ProjectSection } from "../ProjectSection";
 import { ResourcesTable } from "../ResourcesTable";
