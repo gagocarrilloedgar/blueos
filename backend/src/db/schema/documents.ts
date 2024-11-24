@@ -1,18 +1,24 @@
 import { relations, sql } from "drizzle-orm";
-import {
-    integer,
-    pgTable,
-    timestamp,
-    varchar
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 import { foldersTable } from "./folders";
-import { clientsTable, organisationsTable, projectsTable } from "./main";
+import {
+  accountsTable,
+  clientsTable,
+  organisationsTable,
+  projectsTable
+} from "./main";
 
 export const documentsTable = pgTable("documents", {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   content: varchar(),
   folderId: integer("folder_id").references(() => foldersTable.id, {
+    onDelete: "cascade"
+  }),
+  createdBy: integer("created_by").references(() => accountsTable.id, {
+    onDelete: "cascade"
+  }),
+  lastEditedBy: integer("last_edited_by").references(() => accountsTable.id, {
     onDelete: "cascade"
   }),
   projectId: integer("project_id").references(() => projectsTable.id, {
@@ -41,6 +47,14 @@ export const documntsRelations = relations(documentsTable, ({ one, many }) => ({
   folder: one(foldersTable, {
     fields: [documentsTable.folderId],
     references: [foldersTable.id]
+  }),
+  owner: one(accountsTable, {
+    fields: [documentsTable.createdBy],
+    references: [accountsTable.id]
+  }),
+  lastEditor: one(accountsTable, {
+    fields: [documentsTable.createdBy],
+    references: [accountsTable.id]
   }),
   project: one(projectsTable, {
     fields: [documentsTable.projectId],
