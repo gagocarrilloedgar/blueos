@@ -33,14 +33,13 @@ export default async (
   });
 
   if (!folder?.id)
-    return reply
-      .status(404)
-      .send({ message: "The folder does not exist" });
+    return reply.status(404).send({ message: "The folder does not exist" });
 
   await db
     .update(foldersTable)
     .set({
-      name
+      name,
+      updatedAt: new Date()
     })
     .where(eq(foldersTable.id, folderId));
 
